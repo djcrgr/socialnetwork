@@ -1,0 +1,23 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+  <display-name>Archetype Created Web Application</display-name>
+  <session-config>
+    <session-timeout>1</session-timeout>
+  </session-config>
+  <!--redirect with filter-->
+  <servlet>
+    <servlet-name>servletMy</servlet-name>
+    <servlet-class>ServletMy</servlet-class>
+    <init-param>
+      <param-name>name</param-name>
+      <param-value>kolia</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>servletMy</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>
