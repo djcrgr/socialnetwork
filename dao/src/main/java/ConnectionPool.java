@@ -13,12 +13,27 @@ public class ConnectionPool implements Runnable {
     private LinkedList<Connection> availableConnections;
     private LinkedList<Connection> busyConnections;
     private boolean connectionPending = false;
+    private static ConnectionPool instance = null;
 
    /* public ConnectionPool() throws SQLException {
         new ConnectionPool("jdbc:mysql://untabo.beget.tech:3306/untabo_karpovn", "mysql", "mysql", 10, 20, true);
     }*/
 
-    public ConnectionPool(String driver , String url, String username,
+    public static ConnectionPool getInstance(String driver , String url, String username,
+                                             String password, int initialConnections, int maxConnections,
+                                             boolean waitIfBusy) throws SQLException {
+        if(instance == null) {
+            synchronized(ConnectionPool.class) {
+                if(instance == null) {
+                    instance = new ConnectionPool(driver, url, username, password, initialConnections, maxConnections, waitIfBusy);
+                }
+            }
+        }
+
+        return instance;
+    }
+
+    private ConnectionPool(String driver , String url, String username,
                                              String password, int initialConnections, int maxConnections,
                                              boolean waitIfBusy) throws SQLException {
         this.driver = driver;

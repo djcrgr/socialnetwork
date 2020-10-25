@@ -16,7 +16,7 @@ public class GroupDaoTest {
     private Connection connection;
 
     public void before() throws SQLException, IOException, ClassNotFoundException {
-        connectionPool = new ConnectionPool("org.h2.Driver","jdbc:h2:~/test", "sa",
+        connectionPool = ConnectionPool.getInstance("org.h2.Driver","jdbc:h2:~/test", "sa",
                 "", 5, 10, true);
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
