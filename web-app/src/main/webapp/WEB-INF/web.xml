@@ -4,7 +4,7 @@
          version="3.0">
   <display-name>Archetype Created Web Application</display-name>
   <session-config>
-    <session-timeout>1</session-timeout>
+    <session-timeout>10</session-timeout>
   </session-config>
   <!--redirect with filter-->
   <servlet>

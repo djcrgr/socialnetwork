@@ -17,7 +17,7 @@ public class ServletMy extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            connectionPool = new ConnectionPool("com.mysql.jdbc.Driver","jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_34f0532abb90acb?reconnect=true:3306/heroku_34f0532abb90acb", "bd1823065c1f06", "af490815", 10, 20, true);
+            connectionPool = ConnectionPool.getInstance("com.mysql.jdbc.Driver","jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_34f0532abb90acb?reconnect=true:3306/heroku_34f0532abb90acb", "bd1823065c1f06", "af490815", 10, 20, true);
             accountDao = new AccountDao(this.connectionPool.getConnection());
             accountService = new AccountService(accountDao);
         } catch (SQLException | ClassNotFoundException throwables) {
