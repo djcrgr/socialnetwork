@@ -6,8 +6,16 @@
   <session-config>
     <session-timeout>10</session-timeout>
   </session-config>
-  <!--redirect with filter-->
   <servlet>
+    <servlet-name>testJSP</servlet-name>
+    <jsp-file>/WEB-INF/index.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>testJSP</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <!--redirect with filter-->
+  <!--<servlet>
     <servlet-name>servletMy</servlet-name>
     <servlet-class>ServletMy</servlet-class>
     <init-param>
@@ -19,5 +27,5 @@
   <servlet-mapping>
     <servlet-name>servletMy</servlet-name>
     <url-pattern>/</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
 </web-app>

@@ -1,3 +1,8 @@
+/*
+import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
+import com.getjavajob.training.karpovn.socialnetwork.dao.ConnectionPool;
+import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +22,9 @@ public class ServletMy extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            connectionPool = ConnectionPool.getInstance("com.mysql.jdbc.Driver","jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_34f0532abb90acb?reconnect=true:3306/heroku_34f0532abb90acb", "bd1823065c1f06", "af490815", 10, 20, true);
-            accountDao = new AccountDao(this.connectionPool.getConnection());
-            accountService = new AccountService(accountDao);
+            connectionPool = com.getjavajob.training.karpovn.socialnetwork.dao.ConnectionPool.getInstance("com.mysql.jdbc.Driver","jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_34f0532abb90acb?reconnect=true:3306/heroku_34f0532abb90acb", "bd1823065c1f06", "af490815", 10, 20, true);
+            accountDao = new com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao(this.connectionPool.getConnection());
+            accountService = new com.getjavajob.training.karpovn.socialnetwork.service.AccountService(accountDao);
         } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
         }
@@ -31,9 +36,9 @@ public class ServletMy extends HttpServlet {
         StringBuilder sb = new StringBuilder();
         sb.append("<html><body>");
         sb.append("<table border=1 cellpadding=5>");
-        List<Account> accountList = accountService.showAll();
+        List<com.getjavajob.training.karpovn.socialnetwork.common.Account> accountList = accountService.showAll();
         if (accountList != null) {
-            for (Account account : accountList) {
+            for (com.getjavajob.training.karpovn.socialnetwork.common.Account account : accountList) {
                 sb.append("<tr>");
                 sb.append("<td>").append(account.getName()).append("</td>");
                 sb.append("<td>").append(account.getSurname()).append("</td>");
@@ -49,3 +54,4 @@ public class ServletMy extends HttpServlet {
     }
 
 }
+*/
