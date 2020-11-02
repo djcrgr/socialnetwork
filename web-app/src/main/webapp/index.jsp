@@ -10,7 +10,7 @@
             <% request.setAttribute("list", accService.showAll());%>
     <c:forEach var="acc" items="${list}">
         <tr>
-            <td>${acc.}</td>
+            <td>${acc.name}</td>
             <td>${acc.surname}</td>
         </tr>
     </c:forEach>
