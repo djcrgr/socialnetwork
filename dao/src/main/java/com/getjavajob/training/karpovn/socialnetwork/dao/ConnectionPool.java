@@ -31,7 +31,7 @@ public class ConnectionPool implements Runnable {
         if(instance == null) {
             synchronized(ConnectionPool.class) {
                 if(instance == null) {
-                    instance = new ConnectionPool(driver, url, username, password, 10, 20, true);
+                    instance = new ConnectionPool(driver, url, username, password, 5, 9, true);
                 }
             }
         }

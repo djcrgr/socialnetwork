@@ -6,7 +6,26 @@ public class Account {
     private String name;
     private String surname;
     private int age;
-    private String addres;
+    private String address;
+    private int phoneNum;
+    private String password;
+    private String email;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public Account() {
     }
@@ -19,21 +38,32 @@ public class Account {
         this.phoneNum = phoneNum;
     }
 
-    public Account(int id, String name, String surname, int age, String addres, int phoneNum) {
+    public Account(int id, String name, String surname, int age, String address, int phoneNum) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.age = age;
-        this.addres = addres;
+        this.address = address;
         this.phoneNum = phoneNum;
     }
 
-    public String getAddres() {
-        return addres;
+    public Account(int id, String name, String surname, int age, String address, int phoneNum, String password, String email) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.address = address;
+        this.phoneNum = phoneNum;
+        this.password = password;
+        this.email = email;
     }
 
-    public void setAddres(String addres) {
-        this.addres = addres;
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public int getAge() {
@@ -44,12 +74,9 @@ public class Account {
         this.age = age;
     }
 
-    private int phoneNum;
-
     public int getId() {
         return id;
     }
-
 
     public void setId(int id) {
         this.id = id;
@@ -81,13 +108,15 @@ public class Account {
 
     @Override
     public String toString() {
-        return "com.getjavajob.training.karpovn.socialnetwork.common.Account{" +
+        return "Account{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", age=" + age +
-                ", addres='" + addres + '\'' +
+                ", address='" + address + '\'' +
                 ", phoneNum=" + phoneNum +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

@@ -14,9 +14,11 @@ public class GroupDao {
     private static final String DELETE_BY_ID = "delete from mgroup where id = ?";
 
     private Connection connection;
+    private ConnectionPool connectionPool;
 
     public GroupDao() throws SQLException, IOException, ClassNotFoundException {
-        this.connection = ConnectionPool.getInstance().getConnection();
+        this.connectionPool = ConnectionPool.getInstance();
+        this.connection = connectionPool.getConnection();
     }
 
     public void createGroup(Group group) {
@@ -24,6 +26,7 @@ public class GroupDao {
             preparedStatement.setInt(1, group.getId());
             preparedStatement.setString(2, group.getName());
             preparedStatement.execute();
+            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -38,6 +41,7 @@ public class GroupDao {
                     return createGroupFromResult(resultSet);
                 }
             }
+            connectionPool.free(connection);
             return null;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,6 +54,7 @@ public class GroupDao {
             preparedStatement.setString(1, group.getName());
             preparedStatement.setInt(2, group.getId());
             preparedStatement.executeUpdate();
+            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -59,6 +64,7 @@ public class GroupDao {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(DELETE_BY_ID)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
+            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }

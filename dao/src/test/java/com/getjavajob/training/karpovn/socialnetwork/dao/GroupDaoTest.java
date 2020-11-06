@@ -13,7 +13,6 @@ public class GroupDaoTest {
 
 
     private Connection connection;
-/*
     public void before() throws SQLException, IOException, ClassNotFoundException {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
@@ -79,5 +78,5 @@ public class GroupDaoTest {
         groupDao.deleteGroupById(2);
         assertNull(groupDao.readGroupById(2));
         tearDown();
-    }*/
+    }
 }

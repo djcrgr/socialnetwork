@@ -13,34 +13,56 @@ public class AccountDao {
 
     private static final String SELECT_ALL = "SELECT * FROM account";
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE id=?";
-    private static final String CREATE_ACCOUNT = "INSERT INTO account (id, name, surname, age, phoneNum, addres) values (?, ? , ?, ?, ?, ?) ";
-    private static final String UPDATE_ACCOUNT = "update account set name = ?, surname = ?, age = ?, phoneNum = ?, addres = ? where id = ?";
+    private static final String CREATE_ACCOUNT = "INSERT INTO account (id, name, surname, age, phoneNum, address, " +
+            "email, password) values (?, ? , ?, ?, ?, ?, ?, ?) ";
+    private static final String UPDATE_ACCOUNT = "update account set name = ?, surname = ?, age = ?, phoneNum = ?, " +
+            "address = ?, email = ?, password = ? where id = ?";
     private static final String DELETE_BY_ID = "delete from account where id = ?";
     private static final String ADD_FRIEND = "insert into friends (id, friendid)values (? , ?)";
     private static final String REMOVE_FRIEND = "delete from friends where friendid = ? and id = ?";
     private static final String SHOW_FRIENDS = "select * from friends where id = ?";
 
     private Connection connection;
+    private ConnectionPool connectionPool;
 
     public AccountDao() throws SQLException, IOException, ClassNotFoundException {
-        this.connection = ConnectionPool.getInstance().getConnection();
+        this.connectionPool = ConnectionPool.getInstance();
+        this.connection = connectionPool.getConnection();
     }
 
-    public void addFriend(Account account, Account friend) {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(ADD_FRIEND)) {
-            preparedStatement.setInt(1, account.getId());
-            preparedStatement.setInt(2, friend.getId());
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+    public Account checkForLogin(String email, String password) throws SQLException {
+        String sql = "SELECT * FROM account WHERE email = ? and password = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, email);
+        statement.setString(2, password);
+        if (email != null && password  != null) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                Account account = null;
+                if (resultSet.next()) {
+                    account = createAccountFromResult(resultSet);
+                }
+                connectionPool.free(connection);
+                return account;
+            }
+        } else {
+            return null;
         }
     }
 
+    public void addFriend(Account account, Account friend) {
+        prepStat(friend, account, ADD_FRIEND);
+    }
+
     public void removeFriend(Account account, Account friend) {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(REMOVE_FRIEND)) {
+        prepStat(account, friend, REMOVE_FRIEND);
+    }
+
+    private void prepStat(Account account, Account friend, String removeFriend) {
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(removeFriend)) {
             preparedStatement.setInt(1, friend.getId());
             preparedStatement.setInt(2, account.getId());
             preparedStatement.execute();
+            connectionPool.free(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -55,6 +77,7 @@ public class AccountDao {
                     friendList.add(readAccountById(resultSet.getInt("friendid")));
                 }
             }
+            connectionPool.free(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -68,8 +91,11 @@ public class AccountDao {
             preparedStatement.setString(3, account.getSurname());
             preparedStatement.setInt(4, account.getAge());
             preparedStatement.setInt(5, account.getPhoneNum());
-            preparedStatement.setString(6, account.getAddres());
+            preparedStatement.setString(6, account.getAddress());
+            preparedStatement.setString(7, account.getEmail());
+            preparedStatement.setString(8, account.getPassword());
             preparedStatement.executeUpdate();
+            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -81,9 +107,12 @@ public class AccountDao {
             preparedStatement.setString(2, account.getSurname());
             preparedStatement.setInt(3, account.getAge());
             preparedStatement.setInt(4, account.getPhoneNum());
-            preparedStatement.setString(5, account.getAddres());
-            preparedStatement.setInt(6, account.getId());
+            preparedStatement.setString(5, account.getAddress());
+            preparedStatement.setString(6, account.getEmail());
+            preparedStatement.setString(7, account.getPassword());
+            preparedStatement.setInt(8, account.getId());
             preparedStatement.executeUpdate();
+            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -94,6 +123,7 @@ public class AccountDao {
                 .prepareStatement(DELETE_BY_ID)) {
             prepareStatement.setInt(1, id);
             prepareStatement.executeUpdate();
+            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -108,6 +138,7 @@ public class AccountDao {
                     return createAccountFromResult(resultSet);
                 }
             }
+            connectionPool.free(connection);
             return null;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -124,6 +155,7 @@ public class AccountDao {
                     accountList.add(createAccountFromResult(resultSet));
                 }
             }
+            connectionPool.free(connection);
             return accountList;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -139,7 +171,7 @@ public class AccountDao {
         account.setSurname(resultSet.getString("surname"));
         account.setAge(resultSet.getInt("age"));
         account.setPhoneNum(resultSet.getInt("phoneNum"));
-        account.setAddres(resultSet.getString("addres"));
+        account.setAddress(resultSet.getString("address"));
         return account;
     }
 }
