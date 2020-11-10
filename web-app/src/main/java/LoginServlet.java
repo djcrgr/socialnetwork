@@ -19,6 +19,13 @@ public class LoginServlet extends HttpServlet {
             Cookie cookiePas = new Cookie("pas", password);
             response.addCookie(cookieMail);
             response.addCookie(cookiePas);
+        } else {
+            Cookie cookieMail = new Cookie("mail", email);
+            Cookie cookiePas = new Cookie("pas", password);
+            cookieMail.setMaxAge(-1);
+            cookiePas.setMaxAge(-1);
+            response.addCookie(cookieMail);
+            response.addCookie(cookiePas);
         }
         setAccount(request, response, email, password);
     }
@@ -33,6 +40,8 @@ public class LoginServlet extends HttpServlet {
                 dispatcher.forward(request, response);
             } else {
                 request.setAttribute("message", "Invalid email/password");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/look/login.jsp");
+                dispatcher.forward(request, response);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

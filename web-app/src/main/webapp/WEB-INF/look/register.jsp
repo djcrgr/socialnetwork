@@ -63,7 +63,7 @@
 </ul >
 <div style="text-align: center">
     <h1>Register new account</h1>
-    <form action="register" method="post">
+    <form action="register" method="post" enctype="multipart/form-data">
         <label for="name">name:</label>
         <input type="text" id="name" name="name" size="30" />
         <br><br>
@@ -85,6 +85,7 @@
         <label for="password">password:</label>
         <input type="password" id="password" name="password" size="30" />
         <br><br>
+            <input type="file" name="file" />
         <button type="submit">Submit</button>
         <br>${message}
     </form>

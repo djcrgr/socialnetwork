@@ -119,6 +119,16 @@ public class AccountDaoTest {
         tearDown();
     }
 
+    @Test
+    public void iShowAccWithOffset() throws SQLException, IOException, ClassNotFoundException {
+        setUp();
+        AccountDao accountDao = new AccountDao();
+        Account account = new Account(1, "ivan", "ivanov", 10, 25111);
+        List<Account> accountList = accountDao.showAccWithOffset(1,0, "iva", "iva");
+        assertEquals(account.getName(), accountList.get(0).getName());
+        tearDown();
+    }
+
     public void setUp() throws IOException, SQLException, ClassNotFoundException {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));

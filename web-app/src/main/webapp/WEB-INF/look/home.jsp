@@ -1,86 +1,86 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: user
-  Date: 04.11.2020
-  Time: 22:19
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:useBean id="account" scope="session" class="com.getjavajob.training.karpovn.socialnetwork.common.Account" />
-<!DOCTYPE html>
-<html>
-<head>
-    <title>home</title>
-</head>
-<body>
-<style>
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333333;
-    }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head >
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title >test</title >
+    <style type="text/css" >
+        body {
+            font: 10pt Arial, Helvetica, sans-serif; /* Шрифт на веб-странице */
+            background: #e1dfb9; /* Цвет фона */
+        }
 
-    li {
-        float: left;
-    }
+        h2 {
+            font-size: 1.1em; /* Размер шрифта */
+            color: #800040; /* Цвет текста */
+            margin-top: 0; /* Отступ сверху */
+        }
 
-    li a {
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 16px;
-        text-decoration: none;
-    }
+        #container {
+            height: 20cm;
+            width: 500px; /* Ширина слоя */
+            margin: 0 auto; /* Выравнивание по центру */
+            background: #d0d0d0; /* Цвет фона левой колонки */
+        }
 
-    li a:hover {
-        background-color: #111111;
-    }
-    table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
+        #header {
+            font-size: 2.2em; /* Размер текста */
+            text-align: center; /* Выравнивание по центру */
+            padding: 5px; /* Отступы вокруг текста */
+            background: #8fa09b; /* Цвет фона шапки */
+            color: #ffe; /* Цвет текста */
+        }
 
-    td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
+        #sidebar {
+            margin-top: 10px;
+            width: 110px; /* Ширина слоя */
+            padding: 0 10px; /* Отступы вокруг текста */
+            float: left; /* Обтекание по правому краю */
+        }
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
-    }
-    tr:nth-child(odd) {
-        background-color: #1ddeee;
-    }
-</style>
-</head>
-<ul >
-    <li ><a href="profile" >Home</a ></li >
-    <li><a href="loginJsp">Login</a> </li>
-    <li ><a href="registerJsp" >Registration</a ></li >
-    <li ><a href="logout" >logout</a ></li >
-</ul >
-<h1>Hello ${account.name}!</h1>
-<table>
-    <tr>
-        <th>Name:</th>
-        <td>${account.name}</td>
-    </tr>
-    <tr>
-        <th>Surname:</th>
-        <td>${account.surname}</td>
-    </tr>
-    <tr>
-        <th>age:</th>
-        <td>${account.age}</td>
-    </tr>
-</table>
-<form name="logout" action="logout" method="post">
-    <button type="submit" >logout</button >
-</form>
-</body>
-</html>
+        #content {
+            height: 100%;
+            margin-left: 130px; /* Отступ слева */
+            padding: 10px; /* Поля вокруг текста */
+            background: #c4daf3; /* Цвет фона правой колонки */
+        }
+
+        #footer {
+            background: #8fa09b; /* Цвет фона подвала */
+            color: #fff; /* Цвет текста */
+            padding: 5px; /* Отступы вокруг текста */
+            clear: left; /* Отменяем действие float */
+        }
+    </style >
+</head >
+<body >
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="account" class="com.getjavajob.training.karpovn.socialnetwork.common.Account" />
+<div id="content" >
+    <div id="header" >
+        <form action="search">
+            <label for="search">Search:</label>
+            <input type="text" id="search" name="name">
+        </form>
+    </div >
+    <div id="sidebar" >
+        <p ><a href="registerJsp" >registration</a ></p >
+        <p ><a href="profile?id=${sessionScope.id}" > home</a ></p >
+        <form name="logout" action="logout" method="post">
+            <button type="submit" >logout</button >
+        </form>
+    </div >
+    <div id="container" >
+        <h1 >Hello ${requestScope.account.name}</h1 >
+        <br />
+        <p><img src="data:image/png;base64, ${requestScope.image}"/></p>
+        <p ><strong >Name:</strong >${requestScope.account.name}</p >
+        <p ><strong >Surname:</strong >${requestScope.account.surname}</p >
+        <p ><strong >Age:</strong >${requestScope.account.age}</p >
+        <p ><strong >Phone:</strong >${requestScope.account.phoneNum}</p >
+        <p ><strong >e-mail:</strong >${requestScope.account.email}</p >
+    </div >
+    <div id="footer" >&copy; djcrgr@gmail.com</div >
+</div >
+</body >
+</html >
