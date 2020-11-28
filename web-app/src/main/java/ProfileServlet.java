@@ -1,5 +1,5 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
+import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,11 +15,18 @@ public class ProfileServlet extends HttpServlet {
         if (id != null && id.length() > 0) {
             try {
                 int accId = Integer.parseInt(id);
-                AccountDao accountDao = new AccountDao();
-                Account account = accountDao.readAccountById(accId);
+                AccountService accountService = new AccountService();
+                Account account = accountService.readById(accId);
                 req.setAttribute("account", account);
-                String image = accountDao.getImageFromDb(account.getId());
-                req.setAttribute("image", image);
+                try {
+                    String image = accountService.getImageFromDb(account.getId());
+                    req.setAttribute("image", image);
+                } catch (NullPointerException e) {
+                    String res = "";
+                    res = accountService.getImageFromDb(17);
+                    req.setAttribute("image", res);
+                }
+                req.setAttribute("id", accId);
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/look/home.jsp");
                 dispatcher.forward(req, resp);
             } catch (SQLException throwables) {

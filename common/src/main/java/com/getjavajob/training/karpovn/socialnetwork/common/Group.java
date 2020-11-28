@@ -1,11 +1,16 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
-import java.util.Objects;
+import java.sql.Date;
+import java.util.List;
 
 public class Group {
 
     private int id;
     private String name;
+    private String description;
+    private Account owner;
+    private List<Account> userList;
+    private Date creationDate;
 
     public Group() {
     }
@@ -17,28 +22,26 @@ public class Group {
 
     @Override
     public String toString() {
-        return "com.getjavajob.training.karpovn.socialnetwork.common.Group{" +
+        return "Group{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", owner=" + owner +
+                ", userList=" + userList +
+                ", creationDate=" + creationDate +
                 '}';
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public int getId() {
         return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Group group = (Group) o;
-        return id == group.id &&
-                Objects.equals(name, group.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 
     public void setId(int id) {
@@ -51,5 +54,29 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Account getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Account owner) {
+        this.owner = owner;
+    }
+
+    public List<Account> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<Account> userList) {
+        this.userList = userList;
     }
 }

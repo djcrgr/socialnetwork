@@ -1,5 +1,5 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
+import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -32,11 +32,15 @@ public class CookieFilter implements Filter {
         }
         if (email != null && password != null) {
         try {
-            AccountDao accountDao = new AccountDao();
-            Account account = accountDao.checkForLogin(email, password);
+            AccountService accountService = new AccountService();
+            Account account = accountService.checkExisting(email, password);
+            if (account != null) {
             request.setAttribute("message", "u r logged in");
-            request.setAttribute("id", account.getId());
-            request.getSession().setAttribute("id", account.getId());
+            request.getSession().setAttribute("globalId", account.getId());
+//            request.getSession(false).setAttribute("id", account.getId());
+            } else {
+                request.setAttribute("message", "please login");
+            }
             filterChain.doFilter(request, servletResponse);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -47,10 +51,5 @@ public class CookieFilter implements Filter {
             request.setAttribute("message", "please login");
             filterChain.doFilter(request, servletResponse);
         }
-    }
-
-    @Override
-    public void destroy() {
-
     }
 }

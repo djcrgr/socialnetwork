@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html >
-<style>
+<style >
     ul {
         list-style-type: none;
         margin: 0;
@@ -32,6 +32,7 @@
     li a:hover {
         background-color: #111111;
     }
+
     table {
         font-family: arial, sans-serif;
         border-collapse: collapse;
@@ -47,48 +48,70 @@
     tr:nth-child(even) {
         background-color: #dddddd;
     }
+
     tr:nth-child(odd) {
         background-color: #1ddeee;
     }
-</style>
+</style >
 <head >
     <title >Registration</title >
 </head >
 <body >
 <ul >
-    <li ><a href="profile" >Home</a ></li >
-    <li><a href="loginJsp">Login</a> </li>
+    <li ><a href="profile?id=${sessionScope.globalId}" >Home</a ></li >
+    <li ><a href="loginJsp" >Login</a ></li >
     <li ><a href="registerJsp" >Registration</a ></li >
     <li ><a href="logout" >logout</a ></li >
 </ul >
-<div style="text-align: center">
-    <h1>Register new account</h1>
-    <form action="register" method="post" enctype="multipart/form-data">
-        <label for="name">name:</label>
-        <input type="text" id="name" name="name" size="30" />
-        <br><br>
-        <label for="surname">surname:</label>
-        <input type="text" id="surname" name="surname" size="30" />
-        <br><br>
-        <label for="age">age:</label>
-        <input type="number" id="age" name="age" size="30" />
-        <br><br>
-        <label for="phoneNum">phoneNum:</label>
-        <input type="number" id="phoneNum" name="phoneNum" size="30" />
-        <br><br>
-        <label for="address">address:</label>
-        <input type="text" id="address" name="address" size="30" />
-        <br><br>
-        <label for="email">email:</label>
-        <input type="email" id="email" name="email" size="30" />
-        <br><br>
-        <label for="password">password:</label>
-        <input type="password" id="password" name="password" size="30" />
-        <br><br>
-            <input type="file" name="file" />
-        <button type="submit">Submit</button>
-        <br>${message}
+<div style="text-align: center" >
+    <h1 >Register new account</h1 >
+    <form action="register" method="post" enctype="application/x-www-form-urlencoded" >
+        <label >name:
+            <input type="text" name="accname" size="30" >
+        </label >
+        <br ><br >
+        <label >surname:
+            <input type="text" name="accsurname" size="30" />
+        </label >
+        <br ><br >
+        <label >age:
+            <input type="number" name="age" size="30" />
+        </label >
+        <br ><br >
+        <label >phoneNum (Home):
+            <input type="number" name="phoneNumHome" size="30" />
+        </label >
+        <br ><br >
+        <label >phoneNum (Work):
+            <input type="number" name="phoneNumWork" size="30" />
+        </label >
+        <br ><br >
+        <label >address:
+            <input type="text" name="address" size="30" />
+        </label >
+        <br ><br >
+        <label >email:
+            <input type="email" name="email" size="30" />
+        </label >
+        <br ><br >
+        <label>password:
+            <input type="password" name="password" size="30" />
+        </label >
+        <br ><br >
+
+        <button type="submit" >Submit</button >
+    </form >
+    <h2>${requestScope.mes}</h2>
+    <form action="login" method="post" enctype="application/x-www-form-urlencoded">
+        <br ><br >
+        <button type="submit" >Proceed without image</button >
     </form>
-</div>
+    <form action="picUpload" method="post" enctype="multipart/form-data">
+        <br ><br >
+        <input type="hidden" name="newAccId" value="${requestScope.newAccId}" readonly>
+        <input type="file" name="file" />
+        <button type="submit" >Submit</button >
+    </form>
+</div >
 </body >
 </html >

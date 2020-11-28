@@ -11,14 +11,14 @@ import static org.junit.Assert.*;
 
 public class GroupDaoTest {
 
+    /*private Connection connection;
 
-    private Connection connection;
     public void before() throws SQLException, IOException, ClassNotFoundException {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
         String create = properties.getProperty("database.createGroup");
         this.connection = ConnectionPool.getInstance().getConnection();
-        Statement statement = connection.createStatement();
+        Statement statement = this.connection.createStatement();
         statement.execute(create);
     }
 
@@ -30,6 +30,7 @@ public class GroupDaoTest {
         Statement statement = connection.createStatement();
         statement.execute(clean);
         statement.close();
+        ConnectionPool.getInstance().closeAllConnections();
     }
 
     @Test
@@ -78,5 +79,5 @@ public class GroupDaoTest {
         groupDao.deleteGroupById(2);
         assertNull(groupDao.readGroupById(2));
         tearDown();
-    }
+    }*/
 }

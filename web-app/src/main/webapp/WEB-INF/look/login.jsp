@@ -121,12 +121,19 @@
 <body>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="content">
-    <div id="header">s</div>
+    <div id="header">
+        <form action="search">
+            <label for="search">Search:</label>
+            <input type="text" id="search" name="name">
+        </form>
+    </div>
     <div id="sidebar">
         <p><a href="registerJsp">registration</a></p>
-        <p><a href="profile?id=${id}"> home</a>  </p>
+        <p><a href="profile?id=${sessionScope.globalId}"> home</a>  </p>
     </div>
     <div id="container">
+        <h4 style="align-content: center; color: white" >${requestScope.Error}</h4>
+        <br/>
         <h1 >Login</h1 >
         <br >${message}
         <form action="login" method="post">

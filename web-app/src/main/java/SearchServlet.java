@@ -1,5 +1,4 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 
 import javax.servlet.RequestDispatcher;
@@ -26,10 +25,9 @@ public class SearchServlet extends HttpServlet {
         }
         int recordsPerPage = 5;
         try {
-            AccountDao accountDao = new AccountDao();
+            AccountService accountService = new AccountService();
             List<Account> resultList = new ArrayList<>();
-            List<Account> accountList = accountDao.showAccWithOffset(5, currentPage * 5 - 5, searchString,
-                    searchString);
+            List<Account> accountList = accountService.showWithOffset(5, currentPage, searchString, searchString);
             if (accountList != null) {
                 for (Account account : accountList) {
                     if (account.getName().contains(searchString) || account.getSurname().contains(searchString)) {
@@ -45,7 +43,7 @@ public class SearchServlet extends HttpServlet {
                 req.setAttribute("numberOfPages", numberOfPages);
                 req.setAttribute("currentPage", currentPage);
                 req.setAttribute("recordsPerPage", recordsPerPage);
-                RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/look/index.jsp");
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/look/result.jsp");
                 dispatcher.forward(req, resp);
             }
         } catch (SQLException throwables) {

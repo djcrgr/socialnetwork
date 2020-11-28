@@ -1,5 +1,7 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import java.util.List;
+
 public class Account {
 
     private int id;
@@ -7,9 +9,50 @@ public class Account {
     private String surname;
     private int age;
     private String address;
-    private int phoneNum;
+    private List<Phone> phoneNum = null;
     private String password;
     private String email;
+
+    public Account() {
+    }
+
+    public Account(int id, String name, String surname, int age) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+    }
+
+    public Account(int id, String name, String surname, int age, List<Phone> phoneNum) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.phoneNum = phoneNum;
+    }
+
+    public Account(int id, String name, String surname, int age, String address, List<Phone> phoneNum) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.address = address;
+        this.phoneNum = phoneNum;
+    }
+
+    public Account(int id, String name, String surname, int age, String address, List<Phone> phoneNum, String password,
+                   String email) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.address = address;
+        this.phoneNum = phoneNum;
+        this.password = password;
+        this.email = email;
+    }
+
+
 
     public String getPassword() {
         return password;
@@ -24,37 +67,6 @@ public class Account {
     }
 
     public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Account() {
-    }
-
-    public Account(int id, String name, String surname, int age, int phoneNum) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.phoneNum = phoneNum;
-    }
-
-    public Account(int id, String name, String surname, int age, String address, int phoneNum) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.address = address;
-        this.phoneNum = phoneNum;
-    }
-
-    public Account(int id, String name, String surname, int age, String address, int phoneNum, String password, String email) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.address = address;
-        this.phoneNum = phoneNum;
-        this.password = password;
         this.email = email;
     }
 
@@ -98,11 +110,11 @@ public class Account {
         this.surname = surname;
     }
 
-    public int getPhoneNum() {
+    public List<Phone> getPhoneNum() {
         return phoneNum;
     }
 
-    public void setPhoneNum(int phoneNum) {
+    public void setPhoneNum(List<Phone> phoneNum) {
         this.phoneNum = phoneNum;
     }
 

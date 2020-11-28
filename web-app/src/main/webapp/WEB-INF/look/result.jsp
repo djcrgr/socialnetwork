@@ -1,64 +1,3 @@
-<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="accService" class="com.getjavajob.training.karpovn.socialnetwork.service.AccountService"
-             scope="application" />
-<!DOCTYPE html>
-<html >
-<head >
-    <title >login page</title >
-</head >
-<style >
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333333;
-    }
-
-    li {
-        float: left;
-    }
-
-    li a {
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 16px;
-        text-decoration: none;
-    }
-
-    li a:hover {
-        background-color: #111111;
-    }
-</style >
-</head>
-<body >
-<ul >
-    <li ><a href="profile" >Home</a ></li >
-    <li ><a href="loginJsp" >Login</a ></li >
-    <li ><a href="registerJsp" >Registration</a ></li >
-    <li ><a href="logout" >logout</a ></li >
-    <br >
-    <li >
-        <form action="search" method="GET" >Search <input type="text" name="name">
-            </form >
-    </li >
-</ul >
-<table border=1 cellpadding=5 >
-    <h1 >hello ${account.name}</h1 >
-    <jsp:useBean id="account" class="com.getjavajob.training.karpovn.socialnetwork.common.Account" />
-    <c:forEach var="account" items="${requestScope.resultList}" >
-        <tr >
-            <td ><a href="profile" methods="get" name="${account}">${account.name}</a> </td >
-            <td >${account.surname}</td >
-        </tr >
-    </c:forEach >
-</table >
-
-</body >
-</html >--%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -96,7 +35,7 @@
         #sidebar {
             margin-top: 10px;
             width: 110px; /* Ширина слоя */
-            padding: 10px; /* Отступы вокруг текста */
+            padding: 0 10px; /* Отступы вокруг текста */
             float: left; /* Обтекание по правому краю */
         }
 
@@ -127,30 +66,32 @@
     </div >
     <div id="sidebar" >
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="profile?id=${globalId}" role="tab"
+            <a class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="index" role="tab"
                aria-controls="v-pills-home" aria-selected="true">Home</a>
             <a class="nav-link active" id="v-pills-profile-tab" data-toggle="pill"
-               href="readAcc?idAcc=${sessionScope.globalId}" role="tab" aria-controls="v-pills-profile"
-               aria-selected="false">Profile Edit</a>
+               href="profile?id=${sessionScope.globalId}" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</a>
+            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</a>
+            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
             <a class="nav-link" id="v-pills-register-tab" data-toggle="pill" href="registerJsp" role="tab"
                aria-controls="v-pills-settings" aria-selected="false">Register New Acc</a>
         </div>
-        <form name="logout" action="logout" method="post">
-            <button type="submit" >logout</button >
-        </form>
+        <p ><a href="registerJsp" >registration</a ></p >
+        <p ><a href="profile?id=${sessionScope.globalId}" > home</a ></p >
     </div >
     <div id="container" >
-        <li style="content: normal" >
-            ${message}
-        </li >
+        <table class="table table-striped table-bordered table-sm" >
+            <tr >
+                <th >Name</th >
+                <th >Surname</th >
+            </tr >
+            <c:forEach items="${requestScope.resultList}" var="account" >
+                <tr >
+                    <td ><a href="profile?id=${account.id}" >${account.name}</a ></td >
+                    <td >${account.surname}</td >
+                </tr >
+            </c:forEach >
+        </table >
         <ul class="pagination" >
-            <%--<c:if test="${currentPage != 1}">
-                <li class="page-item"><a class="page-link"
-                                         href="search?currentPage=${currentPage-1}">Previous
-                </a>
-                </li>
-            </c:if>--%>
-
             <c:forEach begin="1" end="${requestScope.numberOfPages}" var="i" >
                 <c:choose >
                     <c:when test="${currentPage eq i}" >
@@ -171,19 +112,3 @@
 </div >
 </body >
 </html >
-
-<%--
-<ol >
-    <c:forEach var="account" items="${requestScope.resultList}" >
-        <li >
-            <tr >
-                <td ><a href="profile?id=${account.id}" >${account.name}</a ></td >
-                <td >${account.surname}</td >
-            </tr >
-        </li >
-        <p ><a
-                href="search?name=${requestScope.name}&limit=5&offset=5*(${requestScope.countPages}-1)" >
-                ${requestScope.countPages}</a >
-        </p >
-    </c:forEach >
-</ol >--%>

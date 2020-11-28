@@ -1,7 +1,7 @@
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-         version="3.0">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                             http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
   <display-name>Archetype Created Web Application</display-name>
   <session-config>
     <session-timeout>10</session-timeout>
@@ -46,6 +46,14 @@
     <servlet-name>register</servlet-name>
     <url-pattern>/registerJsp</url-pattern>
   </servlet-mapping>
+<servlet>
+  <servlet-name>picUpload</servlet-name>
+  <servlet-class>PicUploadServlet</servlet-class>
+</servlet>
+  <servlet-mapping>
+    <servlet-name>picUpload</servlet-name>
+    <url-pattern>/picUpload</url-pattern>
+  </servlet-mapping>
   <servlet>
     <servlet-name>registerServlet</servlet-name>
     <servlet-class>RegisterServlet</servlet-class>
@@ -76,7 +84,7 @@
   </filter>
   <filter-mapping>
     <filter-name>CookieFilter</filter-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
   <servlet>
     <servlet-name>search</servlet-name>
@@ -86,18 +94,28 @@
     <servlet-name>search</servlet-name>
     <url-pattern>/search</url-pattern>
   </servlet-mapping>
-  <!--redirect with filter-->
-  <!--<servlet>
-    <servlet-name>servletMy</servlet-name>
-    <servlet-class>ServletMy</servlet-class>
-    <init-param>
-      <param-name>name</param-name>
-      <param-value>kolia</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
+  <servlet>
+    <servlet-name>profileEdit</servlet-name>
+    <jsp-file>/WEB-INF/look/profileEdit.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-    <servlet-name>servletMy</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>-->
+    <servlet-name>profileEdit</servlet-name>
+    <url-pattern>/profileEdit</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>readAccServlet</servlet-name>
+    <servlet-class>ReadAccServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>readAccServlet</servlet-name>
+    <url-pattern>/readAcc</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>updateAcc</servlet-name>
+    <servlet-class>UpdateAccServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>updateAcc</servlet-name>
+    <url-pattern>/updateAcc</url-pattern>
+  </servlet-mapping>
 </web-app>

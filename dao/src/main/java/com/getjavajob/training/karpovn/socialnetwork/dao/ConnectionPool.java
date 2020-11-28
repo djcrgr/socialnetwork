@@ -31,7 +31,7 @@ public class ConnectionPool implements Runnable {
         if(instance == null) {
             synchronized(ConnectionPool.class) {
                 if(instance == null) {
-                    instance = new ConnectionPool(driver, url, username, password, 5, 9, true);
+                    instance = new ConnectionPool(driver, url, username, password, 5, 5, true);
                 }
             }
         }
@@ -59,12 +59,11 @@ public class ConnectionPool implements Runnable {
     }
 
     public synchronized Connection getConnection() throws SQLException, ClassNotFoundException {
-//        Class.forName("java.po.Connection");
         if (!availableConnections.isEmpty()) {
-            Connection existingConnection = (Connection) availableConnections.getLast();///
+            Connection existingConnection = (Connection) availableConnections.getLast();
             int lastIndex = availableConnections.size() - 1;
             availableConnections.removeLast();
-            if (existingConnection.isClosed()) {
+            if (!existingConnection.isValid(0)) {
                 notifyAll(); // Freed up a spot for anybody waiting
                 return (getConnection());
             } else {

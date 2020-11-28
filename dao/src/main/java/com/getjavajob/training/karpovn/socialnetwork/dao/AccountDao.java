@@ -1,12 +1,14 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -14,13 +16,17 @@ public class AccountDao {
 
     //crud for account
 
-    private static final String SELECT_ALL = "SELECT * FROM account";
-    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE id=?";
-    private static final String CREATE_ACCOUNT = "INSERT INTO account (id, name, surname, age, phoneNum, address, " +
-            "email, password) values (?, ? , ?, ?, ?, ?, ?, ?) ";
-    private static final String UPDATE_ACCOUNT = "update account set name = ?, surname = ?, age = ?, phoneNum = ?, " +
+    private static final String SELECT_ALL = "select * from account left join phones on account.id = userId";
+    private static final String SELECT_ALL_BY_ID = "select distinct account.id from account left join phones on account.id = userId";
+    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE account.id=?";
+    private static final String CREATE_PHONE = "insert into phones (userId, phoneNum, phoneType) values (?, ?, ?)";
+    private static final String CREATE_ACCOUNT = "INSERT INTO account (id, name, surname, age, address, " +
+            "email, password) values (?, ? , ?, ?, ?, ?, ?)";
+    private static final String UPDATE_ACCOUNT = "update account set name = ?, surname = ?, age = ?,  " +
             "address = ?, email = ?, password = ? where id = ?";
+    private static final String UPDATE_PHONE = "update phones set phoneNum = ? where phoneType = ? and userId = ?";
     private static final String DELETE_BY_ID = "delete from account where id = ?";
+    private static final String DELETE_PHONES_BY_ID = "delete from phones where userId = ?";
     private static final String ADD_FRIEND = "insert into friends (id, friendid)values (? , ?)";
     private static final String REMOVE_FRIEND = "delete from friends where friendid = ? and id = ?";
     private static final String SHOW_FRIENDS = "select * from friends where id = ?";
@@ -35,12 +41,25 @@ public class AccountDao {
         this.connection = connectionPool.getConnection();
     }
 
-    public String getImageFromDb (int accountId) throws SQLException, IOException {
+    public int getIdForNew() throws SQLException {
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement("select count(*) as result from " +
+                "account")) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                connectionPool.free(this.connection);
+                return resultSet.getInt(1);
+            }
+        }
+    }
+
+    public String getImageFromDb(int accountId) throws SQLException, IOException {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(GET_PHOTO)) {
             preparedStatement.setInt(1, accountId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     Blob blob = resultSet.getBlob("photo");
+                    if (blob == null) {
+                        return getImageFromDb(22);
+                    }
                     InputStream inputStream = blob.getBinaryStream();
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     byte[] buffer = new byte[4096];
@@ -50,6 +69,7 @@ public class AccountDao {
                     }
                     byte[] imageBytes = outputStream.toByteArray();
                     String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    connectionPool.free(this.connection);
                     return base64Image;
                 }
             }
@@ -58,11 +78,11 @@ public class AccountDao {
     }
 
     public Account checkForLogin(String email, String password) throws SQLException {
-        String sql = "SELECT * FROM account WHERE email = ? and password = ?";
+        String sql = "SELECT * FROM account left join phones on account.id = userId WHERE email = ? and password = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, email);
         statement.setString(2, password);
-        if (email != null && password  != null) {
+        if (email != null && password != null) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 Account account = null;
                 if (resultSet.next()) {
@@ -117,35 +137,70 @@ public class AccountDao {
             preparedStatement.setString(2, account.getName());
             preparedStatement.setString(3, account.getSurname());
             preparedStatement.setInt(4, account.getAge());
-            preparedStatement.setInt(5, account.getPhoneNum());
-            preparedStatement.setString(6, account.getAddress());
-            preparedStatement.setString(7, account.getEmail());
-            preparedStatement.setString(8, account.getPassword());
+            preparedStatement.setString(5, account.getAddress());
+            preparedStatement.setString(6, account.getEmail());
+            preparedStatement.setString(7, account.getPassword());
             preparedStatement.executeUpdate();
+            if (account.getPhoneNum() != null) {
+                for (Phone phone : account.getPhoneNum()) {
+                    try (PreparedStatement preparedStatement1 = this.connection.prepareStatement(CREATE_PHONE)) {
+                        preparedStatement1.setInt(1, account.getId());
+                        preparedStatement1.setInt(2, phone.getNumber());
+                        preparedStatement1.setString(3, phone.getType());
+                        preparedStatement1.executeUpdate();
+
+                    }
+                }
+            }
             connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
     }
 
-    public void updateAccount(Account account) {
+    public void updateAccount(Account account) throws SQLException {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(UPDATE_ACCOUNT)) {
             preparedStatement.setString(1, account.getName());
             preparedStatement.setString(2, account.getSurname());
             preparedStatement.setInt(3, account.getAge());
-            preparedStatement.setInt(4, account.getPhoneNum());
-            preparedStatement.setString(5, account.getAddress());
-            preparedStatement.setString(6, account.getEmail());
-            preparedStatement.setString(7, account.getPassword());
-            preparedStatement.setInt(8, account.getId());
+            preparedStatement.setString(4, account.getAddress());
+            preparedStatement.setString(5, account.getEmail());
+            preparedStatement.setString(6, account.getPassword());
+            preparedStatement.setInt(7, account.getId());
             preparedStatement.executeUpdate();
-            connectionPool.free(connection);
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+            if (account.getPhoneNum() != null) {
+                for (Phone phone : account.getPhoneNum()) {
+                    if (phone.getType().equals("home")) {
+                        try (PreparedStatement preparedStatement1 = this.connection.prepareStatement("update phones " +
+                                "set phoneNum = ? where phoneType = 'home' and userId = ?")) {
+                            preparedStatement1.setInt(1, phone.getNumber());
+                            preparedStatement1.setInt(2, account.getId());
+                            preparedStatement1.executeUpdate();
+                            connectionPool.free(connection);
+                        }
+                    } else if (phone.getType().equals("work")){
+                        try (PreparedStatement preparedStatement2 = this.connection.prepareStatement("update phones " +
+                                "set phoneNum = ? where phoneType = 'work' and userId = ?")) {
+                            preparedStatement2.setInt(1, phone.getNumber());
+                            preparedStatement2.setInt(2, account.getId());
+                            preparedStatement2.executeUpdate();
+                            connectionPool.free(connection);
+                        }
+                    }
+                /*try (PreparedStatement preparedStatement1 = this.connection.prepareStatement(UPDATE_PHONE)) {
+                for (Phone phone : account.getPhoneNum()) {
+                        preparedStatement1.setInt(1, phone.getNumber());
+                        preparedStatement1.setString(2, phone.getType());
+                        preparedStatement1.setInt(3, account.getId());
+                        preparedStatement1.executeUpdate();
+                    }
+                }*/
+                }
+            }
         }
     }
 
-    public void deleteById(int id) {
+    public void deleteById(int id) throws SQLException {
         try (PreparedStatement prepareStatement = this.connection
                 .prepareStatement(DELETE_BY_ID)) {
             prepareStatement.setInt(1, id);
@@ -153,6 +208,11 @@ public class AccountDao {
             connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+        }
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(DELETE_PHONES_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            connectionPool.free(connection);
         }
     }
 
@@ -176,11 +236,20 @@ public class AccountDao {
     public List<Account> showAccWithOffset(int limit, int offset, String subStringName, String subStringSurname) throws SQLException {
         List<Account> accountList = new ArrayList<>();
         try (PreparedStatement preparedStatement =
-                     this.connection.prepareStatement("select * from account where name like CONCAT( '%',?,'%') union select * from account where surname like CONCAT( '%',?,'%') limit ? offset ?")) {
+                     this.connection.prepareStatement("select * from account " +
+                             "where " +
+                             "name like " +
+                             "CONCAT( " +
+                             "'%',?," +
+                             "'%') " +
+                             "union select * from account where surname like CONCAT( " +
+                             "'%',?,'%') " +
+                             "limit ? offset " +
+                             "?")) {
             preparedStatement.setString(1, subStringName);
             preparedStatement.setString(2, subStringSurname);
             preparedStatement.setInt(3, limit);
-            preparedStatement.setInt(4, offset );
+            preparedStatement.setInt(4, offset);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     accountList.add(createAccountFromResult(resultSet));
@@ -203,10 +272,11 @@ public class AccountDao {
     public List<Account> showAllAccounts() {
         List<Account> accountList = new ArrayList<>();
         try (PreparedStatement prepareStatement = this.connection
-                .prepareStatement(SELECT_ALL)) {
+                .prepareStatement(SELECT_ALL_BY_ID)) {
             try (ResultSet resultSet = prepareStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    accountList.add(createAccountFromResult(resultSet));
+                    int id = resultSet.getInt("id");
+                    accountList.add(readAccountById(id));
                 }
             }
             connectionPool.free(connection);
@@ -219,15 +289,48 @@ public class AccountDao {
 
 
     private Account createAccountFromResult(ResultSet resultSet) throws SQLException {
+        ResultSet newResultSet = resultSet;
         Account account = new Account();
-        account.setId(resultSet.getInt("id"));
-        account.setName(resultSet.getString("name"));
-        account.setSurname(resultSet.getString("surname"));
-        account.setAge(resultSet.getInt("age"));
-        account.setPhoneNum(resultSet.getInt("phoneNum"));
-        account.setAddress(resultSet.getString("address"));
-        account.setEmail(resultSet.getString("email"));
-        account.setPassword(resultSet.getString("password"));
+        Phone phone = new Phone();
+        List<Phone> phoneList = new ArrayList<>();
+        account.setId(newResultSet.getInt("id"));
+        account.setName(newResultSet.getString("name"));
+        account.setSurname(newResultSet.getString("surname"));
+        account.setAge(newResultSet.getInt("age"));
+        account.setAddress(newResultSet.getString("address"));
+        account.setEmail(newResultSet.getString("email"));
+        account.setPassword(newResultSet.getString("password"));
+        phone.setNumber(newResultSet.getInt("phoneNum"));
+        phone.setType(newResultSet.getString("phoneType"));
+        phoneList.add(phone);
+        while (newResultSet.next()) {
+            Phone newPhone = new Phone();
+            newPhone.setNumber(newResultSet.getInt("phoneNum"));
+            newPhone.setType(newResultSet.getString("phoneType"));
+            phoneList.add(newPhone);
+        }
+        if (phoneList.isEmpty()) {
+            Phone phone1 = new Phone();
+            phone1.setNumber(0);
+            phone1.setType("home");
+            phoneList.add(phone1);
+            phone1.setType("work");
+            phone1.setNumber(0);
+            phoneList.add(phone1);
+        }
+        account.setPhoneNum(phoneList);
+        return account;
+    }
+
+    private Account createAccFromResWithoutPhones(ResultSet newResultSet) throws SQLException {
+        Account account = new Account();
+        account.setId(newResultSet.getInt("id"));
+        account.setName(newResultSet.getString("name"));
+        account.setSurname(newResultSet.getString("surname"));
+        account.setAge(newResultSet.getInt("age"));
+        account.setAddress(newResultSet.getString("address"));
+        account.setEmail(newResultSet.getString("email"));
+        account.setPassword(newResultSet.getString("password"));
         return account;
     }
 }
