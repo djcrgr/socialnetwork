@@ -101,6 +101,7 @@
                 <artifactId>heroku-maven-plugin</artifactId>
                 <version>3.0.3</version>
                 <configuration>
+                    <appName>social-networkv</appName>
                     <processTypes>
                         <!-- @formatter:off -->
                         <web>java $JAVA_OPTS -cp
