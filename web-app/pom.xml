@@ -61,10 +61,11 @@
                     <webResources>
                         <resource>
                             <!-- this is relative to the pom.xml directory -->
-                            <directory>webapp</directory>
+                            <directory>web-app/webapp</directory>
                         </resource>
                     </webResources>
                     <webXml>C:\dev\projects\getjavajob\socialnetwork\web-app\webapp\WEB-INF\web.xml</webXml>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
             <plugin>
