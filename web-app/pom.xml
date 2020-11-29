@@ -64,7 +64,7 @@
                             <directory>webapp</directory>
                         </resource>
                     </webResources>
-                    <webXml>C:\dev\projects\getjavajob\socialnetwork\web-app\src\main\webapp\WEB-INF\web.xml</webXml>
+                    <webXml>C:\dev\projects\getjavajob\socialnetwork\web-app\webapp\WEB-INF\web.xml</webXml>
                 </configuration>
             </plugin>
             <plugin>
@@ -99,16 +99,12 @@
             <plugin>
                 <groupId>com.heroku.sdk</groupId>
                 <artifactId>heroku-maven-plugin</artifactId>
-                <version>3.0.3</version>
+                <version>2.0.13</version>
                 <configuration>
                     <appName>social-networkv</appName>
                     <processTypes>
                         <!-- @formatter:off -->
-                        <web>java $JAVA_OPTS -cp
-                            target/dependency/webapp-runner.jar:target/dependency/tomcat-dbcp.jar
-                            webapp.runner.launch.Main --enable-naming --context-xml
-                            target/root-1.0-SNAPSHOT/META-INF/context.xml $WEBAPP_RUNNER_OPTS --port $PORT
-                            target/root-1.0-SNAPSHOT.war</web>
+                        <web>java $JAVA_OPTS -cp target/dependency/webapp-runner.jar:target/dependency/tomcat-dbcp.jar webapp.runner.launch.Main --enable-naming --context-xml target/root-1.0-SNAPSHOT/META-INF/context.xml $WEBAPP_RUNNER_OPTS --port $PORT target/root-1.0-SNAPSHOT.war</web>
                         <!-- @formatter:on -->
                     </processTypes>
                 </configuration>
