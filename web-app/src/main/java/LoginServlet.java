@@ -39,10 +39,8 @@ public class LoginServlet extends HttpServlet {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/look/login.jsp");
                 dispatcher.forward(request, response);
             }
-        } catch (SQLException throwables) {
+        } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 }

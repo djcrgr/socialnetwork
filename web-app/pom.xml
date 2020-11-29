@@ -103,7 +103,11 @@
                 <configuration>
                     <processTypes>
                         <!-- @formatter:off -->
-                        <web>java $JAVA_OPTS -cp target/dependency/webapp-runner.jar:target/dependency/tomcat-dbcp.jar webapp.runner.launch.Main --enable-naming --context-xml target/web-app-1.0-SNAPSHOT/META-INF/context.xml $WEBAPP_RUNNER_OPTS --port $PORT target/web-app-1.0-SNAPSHOT.war</web>
+                        <web>java $JAVA_OPTS -cp
+                            target/dependency/webapp-runner.jar:target/dependency/tomcat-dbcp.jar
+                            webapp.runner.launch.Main --enable-naming --context-xml
+                            target/root-1.0-SNAPSHOT/META-INF/context.xml $WEBAPP_RUNNER_OPTS --port $PORT
+                            target/root-1.0-SNAPSHOT.war</web>
                         <!-- @formatter:on -->
                     </processTypes>
                 </configuration>

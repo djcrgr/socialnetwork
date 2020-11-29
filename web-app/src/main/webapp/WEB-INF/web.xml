@@ -118,4 +118,20 @@
     <servlet-name>updateAcc</servlet-name>
     <url-pattern>/updateAcc</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>groupProfile</servlet-name>
+    <servlet-class>GroupProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>groupProfile</servlet-name>
+    <url-pattern>/groupProfile</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>groupsJsp</servlet-name>
+    <jsp-file>/WEB-INF/look/groups.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>groupsJsp</servlet-name>
+    <url-pattern>/groupsJsp</url-pattern>
+  </servlet-mapping>
 </web-app>

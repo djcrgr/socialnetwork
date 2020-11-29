@@ -17,7 +17,7 @@ public class PicUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Part filePart = req.getPart("file");
         String id = req.getParameter("newAccId");
-        if (id == null) {
+        if (id.equals("")) {//todo read string api
             id = "0";
         }
         InputStream inputStream = null;

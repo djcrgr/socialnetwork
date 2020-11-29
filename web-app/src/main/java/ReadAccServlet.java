@@ -33,10 +33,12 @@ public class ReadAccServlet extends HttpServlet {
                         int homePhone = 0;
                         int workPhone = 0;
                             for (Phone phone : phoneList) {
+                                if (phone.getType() != null) {
                                 if (phone.getType().equals("work")) {
                                     workPhone = phone.getNumber();
                                 } else {
                                     homePhone = phone.getNumber();
+                                }
                                 }
                             }
                         req.setAttribute("workPhone", workPhone);

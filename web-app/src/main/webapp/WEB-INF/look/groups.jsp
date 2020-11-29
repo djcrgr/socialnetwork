@@ -99,13 +99,13 @@
         <p ><strong >Age: </strong >${requestScope.account.age}</p >
         <p ><strong >Address: </strong > ${requestScope.account.address}</p >
         <p >phones</p >
-            <c:forEach var="phone" items="${requestScope.account.phoneNum}">
-        <table >
-            <tr >
-                <td >${phone.number}</td >
-                <td >${phone.type}</td >
-            </tr >
-        </table >
+        <c:forEach var="phone" items="${requestScope.account.phoneNum}">
+            <table >
+                <tr >
+                    <td >${phone.number}</td >
+                    <td >${phone.type}</td >
+                </tr >
+            </table >
         </c:forEach>
         <p ><strong >e-mail:</strong >${requestScope.account.email}</p >
     </div >
