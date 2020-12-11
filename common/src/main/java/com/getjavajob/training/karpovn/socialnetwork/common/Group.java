@@ -9,7 +9,6 @@ public class Group {
     private String name;
     private String description;
     private Account owner;
-    private List<Account> userList;
     private Date creationDate;
 
     public Group() {
@@ -27,7 +26,6 @@ public class Group {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", owner=" + owner +
-                ", userList=" + userList +
                 ", creationDate=" + creationDate +
                 '}';
     }
@@ -70,13 +68,5 @@ public class Group {
 
     public void setOwner(Account owner) {
         this.owner = owner;
-    }
-
-    public List<Account> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<Account> userList) {
-        this.userList = userList;
     }
 }

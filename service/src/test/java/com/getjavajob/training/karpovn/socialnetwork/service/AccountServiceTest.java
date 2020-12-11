@@ -28,7 +28,7 @@ public class AccountServiceTest {
     @Before
     public void setUp() throws SQLException, IOException, ClassNotFoundException {
         this.accountDao = mock(AccountDao.class);
-        this.accountService = new AccountService(accountDao);
+        this.accountService = new AccountService();
     }
 
     @Test

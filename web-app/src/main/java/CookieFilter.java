@@ -17,7 +17,7 @@ public class CookieFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        Cookie cookies[] = request.getCookies();
+        Cookie[] cookies = request.getCookies();
         String email = null;
         String password = null;
         if (cookies != null) {
@@ -42,10 +42,8 @@ public class CookieFilter implements Filter {
                 request.setAttribute("message", "please login");
             }
             filterChain.doFilter(request, servletResponse);
-        } catch (SQLException throwables) {
+        } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         } else {
             request.setAttribute("message", "please login");

@@ -67,6 +67,9 @@
         </form >
     </div >
     <div id="sidebar" >
+        <div id="photoFrame" >
+            <p ><img src="data:image/png;base64, ${requestScope.picture}" width="200" height="200"/></p >
+        </div >
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
             <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="profile?id=${globalId}" role="tab"
                aria-controls="v-pills-home" aria-selected="true" >Home</a >
@@ -79,7 +82,7 @@
                aria-controls="v-pills-settings" aria-selected="false" >Settings</a >
             <a class="nav-link" id="v-pills-register-tab" data-toggle="pill" href="registerJsp" role="tab"
                aria-controls="v-pills-settings" aria-selected="false" >Register New Acc</a >
-            <a class="nav-link" id="v-pills-showGroups-tab" data-toggle="pill" href="showAllGroups" role="tab"
+            <a class="nav-link" id="v-pills-showGroups-tab" data-toggle="pill" href="showAllGroups?image=${requestScope.image}" role="tab"
                aria-controls="v-pills-settings" aria-selected="false" >Show groups</a >
         </div >
         <p ><a href="registerJsp" >registration</a ></p >
@@ -88,13 +91,11 @@
         </form >
     </div >
     <div id="container" >
-        <c:forEach var="group" items="${requestScope.groups}">
-            <table >
-                <tr >
-                    <td ><a href="groupProfile?groupId=${group.id}">${group.id}     ${group.name}</a></td >
-                </tr >
-            </table >
-        </c:forEach>
+        <br />
+        <p ><strong >groupId: </strong >${requestScope.group.id}</p >
+        <p ><strong >Name: </strong >${requestScope.group.name}</p >
+        <p ><strong >Description: </strong >${requestScope.group.description}</p >
+        <p ><strong >Owner: </strong ><a href="profile?id=${requestScope.group.owner.id}">${requestScope.group.owner.name} ${requestScope.group.owner.surname}</a></p >
     </div >
     <div id="footer" >&copy; djcrgr@gmail.com</div >
 </div >

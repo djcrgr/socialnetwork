@@ -16,7 +16,7 @@ public class AccountDao {
 
     //crud for account
 
-    private static final String SELECT_ALL = "select * from account left join phones on account.id = userId";
+    private static final String SELECT_ALL = "select * from account";
     private static final String SELECT_ALL_BY_ID = "select distinct account.id from account left join phones on account.id = userId";
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE account.id=?";
     private static final String CREATE_PHONE = "insert into phones (userId, phoneNum, phoneType) values (?, ?, ?)";
@@ -41,11 +41,16 @@ public class AccountDao {
         this.connection = connectionPool.getConnection();
     }
 
+    public AccountDao(Connection connection) throws SQLException {
+        this.connection = connection;
+        connection.setAutoCommit(false);
+    }
+
     public int getIdForNew() throws SQLException {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement("select count(*) as result from " +
                 "account")) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                connectionPool.free(this.connection);
+//                connectionPool.free(this.connection);
                 return resultSet.getInt(1);
             }
         }
@@ -69,7 +74,7 @@ public class AccountDao {
                     }
                     byte[] imageBytes = outputStream.toByteArray();
                     String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    connectionPool.free(this.connection);
+//                    connectionPool.free(this.connection);
                     return base64Image;
                 }
             }
@@ -88,7 +93,7 @@ public class AccountDao {
                 if (resultSet.next()) {
                     account = createAccountFromResult(resultSet);
                 }
-                connectionPool.free(connection);
+//                connectionPool.free(connection);
                 return account;
             }
         } else {
@@ -109,7 +114,7 @@ public class AccountDao {
             preparedStatement.setInt(1, friend.getId());
             preparedStatement.setInt(2, account.getId());
             preparedStatement.execute();
-            connectionPool.free(connection);
+//            connectionPool.free(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -124,7 +129,7 @@ public class AccountDao {
                     friendList.add(readAccountById(resultSet.getInt("friendid")));
                 }
             }
-            connectionPool.free(connection);
+//            connectionPool.free(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -141,7 +146,7 @@ public class AccountDao {
             preparedStatement.setString(6, account.getEmail());
             preparedStatement.setString(7, account.getPassword());
             preparedStatement.executeUpdate();
-            if (account.getPhoneNum() != null) {
+            /*if (account.getPhoneNum() != null) {
                 for (Phone phone : account.getPhoneNum()) {
                     try (PreparedStatement preparedStatement1 = this.connection.prepareStatement(CREATE_PHONE)) {
                         preparedStatement1.setInt(1, account.getId());
@@ -151,8 +156,8 @@ public class AccountDao {
 
                     }
                 }
-            }
-            connectionPool.free(connection);
+            }*/
+//            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -168,7 +173,7 @@ public class AccountDao {
             preparedStatement.setString(6, account.getPassword());
             preparedStatement.setInt(7, account.getId());
             preparedStatement.executeUpdate();
-            if (account.getPhoneNum() != null) {
+            /*if (account.getPhoneNum() != null) {
                 for (Phone phone : account.getPhoneNum()) {
                     if (phone.getType().equals("home")) {
                         try (PreparedStatement preparedStatement1 = this.connection.prepareStatement("update phones " +
@@ -176,7 +181,7 @@ public class AccountDao {
                             preparedStatement1.setInt(1, phone.getNumber());
                             preparedStatement1.setInt(2, account.getId());
                             preparedStatement1.executeUpdate();
-                            connectionPool.free(connection);
+//                            connectionPool.free(connection);
                         }
                     } else if (phone.getType().equals("work")){
                         try (PreparedStatement preparedStatement2 = this.connection.prepareStatement("update phones " +
@@ -184,19 +189,19 @@ public class AccountDao {
                             preparedStatement2.setInt(1, phone.getNumber());
                             preparedStatement2.setInt(2, account.getId());
                             preparedStatement2.executeUpdate();
-                            connectionPool.free(connection);
+//                            connectionPool.free(connection);
                         }
                     }
-                /*try (PreparedStatement preparedStatement1 = this.connection.prepareStatement(UPDATE_PHONE)) {
+                *//*try (PreparedStatement preparedStatement1 = this.connection.prepareStatement(UPDATE_PHONE)) {
                 for (Phone phone : account.getPhoneNum()) {
                         preparedStatement1.setInt(1, phone.getNumber());
                         preparedStatement1.setString(2, phone.getType());
                         preparedStatement1.setInt(3, account.getId());
                         preparedStatement1.executeUpdate();
                     }
-                }*/
+                }*//*
                 }
-            }
+            }*/
         }
     }
 
@@ -205,15 +210,15 @@ public class AccountDao {
                 .prepareStatement(DELETE_BY_ID)) {
             prepareStatement.setInt(1, id);
             prepareStatement.executeUpdate();
-            connectionPool.free(connection);
+//            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(DELETE_PHONES_BY_ID)) {
+        /*try (PreparedStatement preparedStatement = this.connection.prepareStatement(DELETE_PHONES_BY_ID)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            connectionPool.free(connection);
-        }
+//            connectionPool.free(connection);
+        }*/
     }
 
     public Account readAccountById(int id) {
@@ -225,7 +230,6 @@ public class AccountDao {
                     return createAccountFromResult(resultSet);
                 }
             }
-            connectionPool.free(connection);
             return null;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -255,7 +259,6 @@ public class AccountDao {
                     accountList.add(createAccountFromResult(resultSet));
                 }
             }
-            connectionPool.free(this.connection);
         }
         return accountList;
     }
@@ -265,7 +268,6 @@ public class AccountDao {
             preparedStatement.setBlob(1, inputStream);
             preparedStatement.setInt(2, accountId);
             preparedStatement.executeUpdate();
-            connectionPool.free(this.connection);
         }
     }
 
@@ -279,7 +281,6 @@ public class AccountDao {
                     accountList.add(readAccountById(id));
                 }
             }
-            connectionPool.free(connection);
             return accountList;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -290,39 +291,6 @@ public class AccountDao {
 
     private Account createAccountFromResult(ResultSet resultSet) throws SQLException {
         ResultSet newResultSet = resultSet;
-        Account account = new Account();
-        Phone phone = new Phone();
-        List<Phone> phoneList = new ArrayList<>();
-        account.setId(newResultSet.getInt("id"));
-        account.setName(newResultSet.getString("name"));
-        account.setSurname(newResultSet.getString("surname"));
-        account.setAge(newResultSet.getInt("age"));
-        account.setAddress(newResultSet.getString("address"));
-        account.setEmail(newResultSet.getString("email"));
-        account.setPassword(newResultSet.getString("password"));
-        phone.setNumber(newResultSet.getInt("phoneNum"));
-        phone.setType(newResultSet.getString("phoneType"));
-        phoneList.add(phone);
-        while (newResultSet.next()) {
-            Phone newPhone = new Phone();
-            newPhone.setNumber(newResultSet.getInt("phoneNum"));
-            newPhone.setType(newResultSet.getString("phoneType"));
-            phoneList.add(newPhone);
-        }
-        if (phoneList.isEmpty()) {
-            Phone phone1 = new Phone();
-            phone1.setNumber(0);
-            phone1.setType("home");
-            phoneList.add(phone1);
-            phone1.setType("work");
-            phone1.setNumber(0);
-            phoneList.add(phone1);
-        }
-        account.setPhoneNum(phoneList);
-        return account;
-    }
-
-    private Account createAccFromResWithoutPhones(ResultSet newResultSet) throws SQLException {
         Account account = new Account();
         account.setId(newResultSet.getInt("id"));
         account.setName(newResultSet.getString("name"));

@@ -5,29 +5,27 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface AbstractService<T> {
+public abstract class AbstractService<T, S> {
 
-    void create(T t);
+    abstract void create(T t) throws SQLException;
 
-    T readById(int id);
+    abstract T readById(int id) throws SQLException, IOException, ClassNotFoundException;
 
-    String getImageFromDb(int id) throws IOException, SQLException;
+    abstract String getImageFromDb(int id) throws IOException, SQLException;
 
-    void update(T t);
+    abstract void update(T t) throws SQLException;
 
-    void delete(T t) throws SQLException;
+    abstract void delete(T t) throws SQLException;
 
-    void addFriend(T t, T friend);
+    abstract void addFriend(T t, T friend);
 
-    void removeFriend(T t, T friend);
+    abstract void removeFriend(T t, T friend);
 
-    List<T> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr, String searchStrCopy) throws SQLException;
+    abstract void loadPicture(int id, InputStream inputStream) throws SQLException;
 
-    void loadPicture(int id, InputStream inputStream) throws SQLException;
+    abstract List<T> showFriends(T t) ;
 
-    List<T> showFriends(T t);
+    abstract List<T> showAll() throws SQLException, IOException, ClassNotFoundException;
 
-    List<T> showAll();
-
-    T checkExisting(String email, String password) throws SQLException;
+    abstract T checkExisting(String email, String password) throws SQLException;
 }

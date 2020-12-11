@@ -134,4 +134,20 @@
     <servlet-name>groupsJsp</servlet-name>
     <url-pattern>/groupsJsp</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>showAllGroups</servlet-name>
+    <servlet-class>ShowAllGroupsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>showAllGroups</servlet-name>
+    <url-pattern>/showAllGroups</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>group</servlet-name>
+    <jsp-file>/WEB-INF/look/group.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>group</servlet-name>
+    <url-pattern>/group</url-pattern>
+  </servlet-mapping>
 </web-app>

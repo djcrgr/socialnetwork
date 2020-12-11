@@ -82,7 +82,7 @@
                aria-controls="v-pills-settings" aria-selected="false" >Settings</a >
             <a class="nav-link" id="v-pills-register-tab" data-toggle="pill" href="registerJsp" role="tab"
                aria-controls="v-pills-settings" aria-selected="false" >Register New Acc</a >
-            <a class="nav-link" id="v-pills-showGroups-tab" data-toggle="pill" href="registerJsp" role="tab"
+            <a class="nav-link" id="v-pills-showGroups-tab" data-toggle="pill" href="showAllGroups" role="tab"
                aria-controls="v-pills-settings" aria-selected="false" >Show groups</a >
         </div >
         <p ><a href="registerJsp" >registration</a ></p >
