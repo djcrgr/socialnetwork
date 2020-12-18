@@ -17,13 +17,13 @@ public abstract class AbstractService<T, S> {
 
     abstract void delete(T t) throws SQLException;
 
-    abstract void addFriend(T t, T friend);
+    /*abstract void addFriend(T t, T friend);
 
-    abstract void removeFriend(T t, T friend);
+    abstract void removeFriend(T t, T friend);*/
 
     abstract void loadPicture(int id, InputStream inputStream) throws SQLException;
 
-    abstract List<T> showFriends(T t) ;
+    /*bstract List<T> showFriends(T t) ;*/
 
     abstract List<T> showAll() throws SQLException, IOException, ClassNotFoundException;
 

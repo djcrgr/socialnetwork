@@ -17,7 +17,7 @@ public class AccountDao {
     //crud for account
 
     private static final String SELECT_ALL = "select * from account";
-    private static final String SELECT_ALL_BY_ID = "select distinct account.id from account left join phones on account.id = userId";
+    private static final String SELECT_ALL_BY_ID = "select distinct account.id from account ";
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE account.id=?";
     private static final String CREATE_PHONE = "insert into phones (userId, phoneNum, phoneType) values (?, ?, ?)";
     private static final String CREATE_ACCOUNT = "INSERT INTO account (id, name, surname, age, address, " +
@@ -47,13 +47,16 @@ public class AccountDao {
     }
 
     public int getIdForNew() throws SQLException {
+        int result = 0;
         try (PreparedStatement preparedStatement = this.connection.prepareStatement("select count(*) as result from " +
                 "account")) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-//                connectionPool.free(this.connection);
-                return resultSet.getInt(1);
+                if (resultSet.next()) {
+                return resultSet.getInt("result") + 1;
+                }
             }
         }
+        return result;
     }
 
     public String getImageFromDb(int accountId) throws SQLException, IOException {
@@ -83,7 +86,7 @@ public class AccountDao {
     }
 
     public Account checkForLogin(String email, String password) throws SQLException {
-        String sql = "SELECT * FROM account left join phones on account.id = userId WHERE email = ? and password = ?";
+        String sql = "SELECT * FROM account WHERE email = ? and password = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, email);
         statement.setString(2, password);
@@ -93,7 +96,6 @@ public class AccountDao {
                 if (resultSet.next()) {
                     account = createAccountFromResult(resultSet);
                 }
-//                connectionPool.free(connection);
                 return account;
             }
         } else {
@@ -101,7 +103,7 @@ public class AccountDao {
         }
     }
 
-    public void addFriend(Account account, Account friend) {
+    /*public void addFriend(Account account, Account friend) {
         prepStat(friend, account, ADD_FRIEND);
     }
 
@@ -118,7 +120,7 @@ public class AccountDao {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
+    }*/
 
     public List<Account> showFriend(Account account) {
         List<Account> friendList = new ArrayList<>();
@@ -290,15 +292,14 @@ public class AccountDao {
 
 
     private Account createAccountFromResult(ResultSet resultSet) throws SQLException {
-        ResultSet newResultSet = resultSet;
         Account account = new Account();
-        account.setId(newResultSet.getInt("id"));
-        account.setName(newResultSet.getString("name"));
-        account.setSurname(newResultSet.getString("surname"));
-        account.setAge(newResultSet.getInt("age"));
-        account.setAddress(newResultSet.getString("address"));
-        account.setEmail(newResultSet.getString("email"));
-        account.setPassword(newResultSet.getString("password"));
+        account.setId(resultSet.getInt("id"));
+        account.setName(resultSet.getString("name"));
+        account.setSurname(resultSet.getString("surname"));
+        account.setAge(resultSet.getInt("age"));
+        account.setAddress(resultSet.getString("address"));
+        account.setEmail(resultSet.getString("email"));
+        account.setPassword(resultSet.getString("password"));
         return account;
     }
 }

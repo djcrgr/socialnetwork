@@ -5,6 +5,14 @@ public class Phone {
     private int number;
     private String type;
 
+    public Phone(int number, String type) {
+        this.number = number;
+        this.type = type;
+    }
+
+    public Phone() {
+    }
+
     public int getNumber() {
         return number;
     }

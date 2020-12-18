@@ -1,5 +1,7 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import com.getjavajob.training.karpovn.socialnetwork.common.Group;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
+import com.getjavajob.training.karpovn.socialnetwork.service.GroupService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,17 +20,40 @@ public class SearchServlet extends HttpServlet {
         String searchString = req.getParameter("name");
         int currentPage;
         try {
-        currentPage = Integer.parseInt(req.getParameter("currentPage"));
+            currentPage = Integer.parseInt(req.getParameter("currentPage"));
         } catch (Exception e) {
             currentPage = 1;
-
+        }
+        int currentPageGr;
+        try {
+            currentPageGr = Integer.parseInt(req.getParameter("currentPageGr"));
+        } catch (Exception e) {
+            currentPageGr = 1;
         }
         int recordsPerPage = 5;
         try {
             AccountService accountService = new AccountService();
+            GroupService groupService = new GroupService();
+            List<Group> groups = new ArrayList<>();
             List<Account> resultList = new ArrayList<>();
             List<Account> accountList = accountService.showWithOffset(5, currentPage, searchString, searchString);
-            if (accountList != null) {
+            List<Group> groupList = groupService.showWithOffset(5, currentPageGr, searchString);
+            if (!groupList.isEmpty()) {
+                for (Group group : groupList) {
+                    if (group.getName().toLowerCase().contains(searchString.toLowerCase())) {
+                        groups.add(group);
+                    }
+                }
+                int numberOfPagesGr = groups.size() / recordsPerPage;
+                if (numberOfPagesGr % recordsPerPage > 0) {
+                    numberOfPagesGr++;
+                }
+                req.setAttribute("resultListGroups", groups);
+                req.setAttribute("numberOfPagesGr", numberOfPagesGr);
+                req.setAttribute("currentPageGr", currentPageGr);
+                req.setAttribute("recordsPerPage", recordsPerPage);
+            }
+            if (!accountList.isEmpty()) {
                 for (Account account : accountList) {
                     if (account.getName().contains(searchString) || account.getSurname().contains(searchString)) {
                         resultList.add(account);
@@ -39,17 +64,15 @@ public class SearchServlet extends HttpServlet {
                 if (numberOfPages % recordsPerPage > 0) {
                     numberOfPages++;
                 }
-                req.setAttribute("name", searchString);
                 req.setAttribute("numberOfPages", numberOfPages);
                 req.setAttribute("currentPage", currentPage);
                 req.setAttribute("recordsPerPage", recordsPerPage);
-                RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/look/result.jsp");
-                dispatcher.forward(req, resp);
             }
-        } catch (SQLException throwables) {
+            req.setAttribute("name", searchString);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/look/result.jsp");
+            dispatcher.forward(req, resp);
+        } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 }

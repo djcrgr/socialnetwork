@@ -66,10 +66,8 @@
     </div >
     <div id="sidebar" >
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="index" role="tab"
+            <a class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="profile?id=${sessionScope.globalId}" role="tab"
                aria-controls="v-pills-home" aria-selected="true">Home</a>
-            <a class="nav-link active" id="v-pills-profile-tab" data-toggle="pill"
-               href="profile?id=${sessionScope.globalId}" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</a>
             <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</a>
             <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
             <a class="nav-link" id="v-pills-register-tab" data-toggle="pill" href="registerJsp" role="tab"
@@ -80,10 +78,6 @@
     </div >
     <div id="container" >
         <table class="table table-striped table-bordered table-sm" >
-            <tr >
-                <th >Name</th >
-                <th >Surname</th >
-            </tr >
             <c:forEach items="${requestScope.resultList}" var="account" >
                 <tr >
                     <td ><a href="profile?id=${account.id}" >${account.name}</a ></td >
@@ -102,6 +96,30 @@
                     <c:otherwise >
                         <li class="page-item" ><a class="page-link"
                                                   href="search?name=${requestScope.name}&currentPage=${i}" >${i}</a >
+                        </li >
+                    </c:otherwise >
+                </c:choose >
+            </c:forEach >
+        </ul >
+        <br>
+        <table class="table table-striped table-bordered table-sm" >
+            <c:forEach items="${requestScope.resultListGroups}" var="group" >
+                <tr >
+                    <td ><a href="groupProfile?groupId=${group.id}" >${group.name}</a ></td >
+                </tr >
+            </c:forEach >
+        </table >
+        <ul class="pagination" >
+            <c:forEach begin="1" end="${requestScope.numberOfPagesGr}" var="i" >
+                <c:choose >
+                    <c:when test="${requestScope.currentPageGr eq i}" >
+                        <li class="page-item active" ><a class="page-link" >
+                                ${i} <span class="sr-only" >(current)</span ></a >
+                        </li >
+                    </c:when >
+                    <c:otherwise >
+                        <li class="page-item" ><a class="page-link"
+                                                  href="search?name=${requestScope.name}&currentPageGr=${i}" >${i}</a >
                         </li >
                     </c:otherwise >
                 </c:choose >

@@ -9,17 +9,18 @@ import java.util.Properties;
 
 public class ConnectionPool implements Runnable {
 
-    private String driver;
-    private String url;
-    private String username;
-    private String password;
-    private int maxConnections;
-    private boolean waitIfBusy;
+    private final String driver;
+    private final String url;
+    private final String username;
+    private final String password;
+    private final int maxConnections;
+    private final boolean waitIfBusy;
     private LinkedList<Connection> availableConnections;
     private LinkedList<Connection> busyConnections;
     private boolean connectionPending = false;
     private static ConnectionPool instance = null;
 
+    private static final ThreadLocal<Connection> threadLocalScope = new  ThreadLocal<>();
 
     public static ConnectionPool getInstance() throws SQLException, IOException {
         Properties properties = new Properties();
@@ -58,16 +59,21 @@ public class ConnectionPool implements Runnable {
         }
     }
 
+    public Connection getThreadConnection() throws SQLException, ClassNotFoundException {
+        getConnection();
+        return threadLocalScope.get();
+    }
+
     public synchronized Connection getConnection() throws SQLException, ClassNotFoundException {
         if (!availableConnections.isEmpty()) {
-            Connection existingConnection = (Connection) availableConnections.getLast();
-            int lastIndex = availableConnections.size() - 1;
+            Connection existingConnection = availableConnections.getLast();
             availableConnections.removeLast();
             if (!existingConnection.isValid(0)) {
                 notifyAll(); // Freed up a spot for anybody waiting
                 return (getConnection());
             } else {
                 busyConnections.add(existingConnection);
+                threadLocalScope.set(existingConnection);
                 return (existingConnection);
             }
         } else {
@@ -79,6 +85,7 @@ public class ConnectionPool implements Runnable {
             try {
                 wait();
             } catch (InterruptedException ie) {
+                ie.printStackTrace();
             }
             return (getConnection());
         }
@@ -91,6 +98,7 @@ public class ConnectionPool implements Runnable {
             Thread connectThread = new Thread(this);
             connectThread.start();
         } catch (OutOfMemoryError oome) {
+            oome.printStackTrace();
         }
     }
 
@@ -124,8 +132,8 @@ public class ConnectionPool implements Runnable {
 
     public synchronized void free(Connection connection) {
         busyConnections.remove(connection);
+        threadLocalScope.remove();
         availableConnections.add(connection);
-        // Wake up threads that are waiting for a connection
         notifyAll();
     }
 
@@ -150,14 +158,12 @@ public class ConnectionPool implements Runnable {
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            // Ignore errors; garbage collect anyhow
         }
     }
 
     public synchronized String toString() {
-        String info = "com.getjavajob.training.karpovn.socialnetwork.dao.ConnectionPool(" + url + "," + username + ")"
+        return ("com.getjavajob.training.karpovn.socialnetwork.dao.ConnectionPool(" + url + "," + username + ")"
                 + ", available=" + availableConnections.size() + ", busy="
-                + busyConnections.size() + ", max=" + maxConnections;
-        return (info);
+                + busyConnections.size() + ", max=" + maxConnections);
     }
 }

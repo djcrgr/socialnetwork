@@ -47,7 +47,6 @@ public class GroupDao {
             preparedStatement.setInt(4, group.getOwner().getId());
             preparedStatement.setDate(5, new Date(System.currentTimeMillis()) );
             preparedStatement.execute();
-            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -62,7 +61,6 @@ public class GroupDao {
                     return createGroupFromResult(resultSet);
                 }
             }
-            connectionPool.free(connection);
             return null;
         }
     }
@@ -74,7 +72,6 @@ public class GroupDao {
             preparedStatement.setInt(3, group.getOwner().getId());
             preparedStatement.setInt(4, group.getId());
             preparedStatement.executeUpdate();
-            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -84,7 +81,6 @@ public class GroupDao {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(DELETE_BY_ID)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            connectionPool.free(connection);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -108,7 +104,6 @@ public class GroupDao {
                     }
                     byte[] imageBytes = outputStream.toByteArray();
                     String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    connectionPool.free(this.connection);
                     return base64Image;
                 }
             }
@@ -125,7 +120,6 @@ public class GroupDao {
                     accountList.add(accountDao.readAccountById(resultSet.getInt("userId")));
                 }
             }
-            connectionPool.free(this.connection);
         }
         return accountList;
     }
@@ -138,7 +132,6 @@ public class GroupDao {
                     groupList.add(createGroupFromResult(resultSet));
                 }
             }
-            connectionPool.free(this.connection);
         }
         return groupList;
     }
@@ -163,14 +156,13 @@ public class GroupDao {
                     groupList.add(createGroupFromResult(resultSet));
                 }
             }
-            connectionPool.free(this.connection);
         }
         return groupList;
     }
 
     private Group createGroupFromResult(ResultSet resultSet) throws SQLException, IOException, ClassNotFoundException {
         Group group = new Group();
-        AccountDao accountDao = new AccountDao();
+        AccountDao accountDao = new AccountDao(connection);
         group.setId(resultSet.getInt("id"));
         group.setName(resultSet.getString("name"));
         group.setDescription(resultSet.getString("description"));
@@ -184,7 +176,6 @@ public class GroupDao {
             preparedStatement.setBlob(1, inputStream);
             preparedStatement.setInt(2, groupId);
             preparedStatement.executeUpdate();
-            connectionPool.free(this.connection);
         }
     }
 

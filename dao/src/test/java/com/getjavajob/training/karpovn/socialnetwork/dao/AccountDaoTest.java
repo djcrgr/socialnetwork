@@ -1,157 +1,133 @@
-//package com.getjavajob.training.karpovn.socialnetwork.dao;
-//
-//import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-//import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
-//import com.getjavajob.training.karpovn.socialnetwork.dao.ConnectionPool;
-//import org.junit.FixMethodOrder;
-//import org.junit.Test;
-//import org.junit.runners.MethodSorters;
-//
-//import java.io.IOException;
-//import java.sql.*;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Properties;
-//
-//import static org.hamcrest.CoreMatchers.is;
-//import static org.junit.Assert.*;
-//
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-//public class AccountDaoTest {
-//
-//    private Connection connection;
-//
-//    @Test
-//    public void aCreateAccount() throws IOException, SQLException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        Account newAccount = new Account(2, "ivan", "ivanov", 10, 25111);
-//        accountDao.createAccount(newAccount);
-//        Account account = accountDao.readAccountById(2);
-//        assertEquals("ivan", account.getName());
-//        tearDown();
-//    }
-//
-//    @Test
-//    public void bReadAccountById() throws IOException, SQLException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        Account expectedAcc = accountDao.readAccountById(1);
-//        assertEquals(25111, expectedAcc.getPhoneNum());
-//        tearDown();
-//    }
-//
-//    @Test
-//    public void cUpdateAccount() throws IOException, SQLException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        Account newAcc = new Account(1, "petr", "ivanov", 15, 545);
-//        accountDao.updateAccount(newAcc);
-//        Account expectedAcc = accountDao.readAccountById(1);
-//        assertEquals("petr", expectedAcc.getName());
-//        tearDown();
-//    }
-//
-//    @Test
-//    public void deleteById() throws IOException, SQLException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        accountDao.deleteById(1);
-//        assertNull(accountDao.readAccountById(1));
-//        tearDown();
-//    }
-//
-//    @Test
-//    public void eAddFriend() throws IOException, SQLException, ClassNotFoundException {
-//        setUp();
-//        Account friend = new Account(2, "petr", "petrov", 32, 32111);
-//        AccountDao accountDao = new AccountDao();
-//        Account user = accountDao.readAccountById(1);
-//        accountDao.createAccount(friend);
-//        accountDao.addFriend(user, friend);
-//        int friendId = 0;
-//        try (PreparedStatement preparedStatement = connection.prepareStatement("select * from friends")) {
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            if (resultSet.next()) {
-//                friendId = resultSet.getInt("friendid");
-//            }
-//        }
-//        assertEquals(friend.getId(), friendId);
-//        tearDown();
-//    }
-//
-//    @Test
-//    public void hShowFriend() throws IOException, SQLException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        Account user = accountDao.readAccountById(1);
-//        Account friend = new Account(2, "petr", "petrov", 32, 32111);
-//        accountDao.createAccount(friend);
-//        accountDao.addFriend(user, friend);
-//        List<Account> accountList = new ArrayList<>();
-//        accountList.add(friend);
-//        List<Account> expectedList = accountDao.showFriend(user);
-//        assertEquals(accountList.get(0).getName(), expectedList.get(0).getName());
-//        tearDown();
-//    }
-//
-//    @Test(expected = org.h2.jdbc.JdbcSQLNonTransientException.class)
-//    public void gRemoveFriend() throws IOException, SQLException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        Account user = accountDao.readAccountById(1);
-//        Account friend = new Account(2, "petr", "petrov", 32, 32111);
-//        accountDao.createAccount(friend);
-//        accountDao.removeFriend(user, friend);
-//        try (PreparedStatement preparedStatement = connection.prepareStatement("select * from friends")) {
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            tearDown();
-//            resultSet.getInt("id");
-//        }
-//    }
-//
-//    @Test
-//    public void hShowAllAccounts() throws SQLException, IOException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        List<Account> accountList = accountDao.showAllAccounts();
-//        assertEquals("ivan", accountList.get(0).getName());
-//        tearDown();
-//    }
-//
-//    @Test
-//    public void iShowAccWithOffset() throws SQLException, IOException, ClassNotFoundException {
-//        setUp();
-//        AccountDao accountDao = new AccountDao();
-//        Account account = new Account(1, "ivan", "ivanov", 10, 25111);
-//        List<Account> accountList = accountDao.showAccWithOffset(1,0, "iva", "iva");
-//        assertEquals(account.getName(), accountList.get(0).getName());
-//        tearDown();
-//    }
-//
-//    public void setUp() throws IOException, SQLException, ClassNotFoundException {
-//        Properties properties = new Properties();
-//        properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
-//        String create = properties.getProperty("database.createAcc");
-//        String fill = properties.getProperty("database.fill");
-//        String createFriends = properties.getProperty("database.createFriends");
-//        this.connection = ConnectionPool.getInstance().getConnection();
-//        Statement statement = connection.createStatement();
-//        statement.execute(create);
-//        statement.execute(fill);
-//        statement.execute(createFriends);
-//    }
-//
-//    public void tearDown() throws IOException, SQLException, ClassNotFoundException {
-//        Properties properties = new Properties();
-//        properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
-//        String cleanAcc = properties.getProperty("database.cleanAcc");
-//        String cleanFriends = properties.getProperty("database.cleanFriends");
-//        Statement statement = this.connection.createStatement();
-//        statement.execute(cleanAcc);
-//        statement.execute(cleanFriends);
-//        statement.close();
-//        ConnectionPool connectionPool = ConnectionPool.getInstance();
-//        connectionPool.closeAllConnections();
-//    }
-//}
+package com.getjavajob.training.karpovn.socialnetwork.dao;
+
+import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
+
+public class AccountDaoTest {
+
+    private Connection connection;
+    private AccountDao accountDao;
+    private InputStream inputStream;
+
+    @Before
+    public void setUp() throws Exception {
+        Properties properties = new Properties();
+        properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
+        inputStream = this.getClass().getClassLoader().getResourceAsStream("15.png");
+        String create = properties.getProperty("database.createAcc");
+        String fill = properties.getProperty("database.fill");
+        String createFriendsInDb = properties.getProperty("database.createFriends");
+        this.connection = ConnectionPool.getInstance().getConnection();
+        Statement statement = this.connection.createStatement();
+        statement.execute(create);
+        statement.execute(fill);
+        statement.execute(createFriendsInDb);
+        accountDao = new AccountDao(connection);
+        ConnectionPool.getInstance().free(connection);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        Properties properties = new Properties();
+        properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
+        String clean = properties.getProperty("database.cleanAcc");
+        String cleanFriendsTable = properties.getProperty("database.cleanFriends");
+        this.connection = ConnectionPool.getInstance().getConnection();
+        Statement statement = this.connection.createStatement();
+        statement.execute(clean);
+        statement.execute(cleanFriendsTable);
+        ConnectionPool.getInstance().free(connection);
+    }
+
+    @Test
+    public void getIdForNew() throws SQLException {
+        assertEquals(2, accountDao.getIdForNew());
+    }
+
+    @Test
+    public void getImageFromDb() throws IOException, SQLException {
+        accountDao.loadPicture(1, inputStream);
+        assertFalse(accountDao.getImageFromDb(1).isEmpty());
+    }
+
+    @Test
+    public void checkForLogin() throws SQLException {
+        Account account = new Account();
+        account.setName("ivan");
+        assertEquals(account.getName(), accountDao.checkForLogin("list@list.ru", "123").getName());
+    }
+
+    @Test
+    public void createAccount() {
+        Account user = new Account();
+        user.setId(2);
+        user.setName("Petr");
+        accountDao.createAccount(user);
+        assertEquals(user.getId(), accountDao.readAccountById(2).getId());
+    }
+
+    @Test
+    public void updateAccount() throws SQLException {
+        Account user = new Account();
+        user.setId(2);
+        user.setName("Petr");
+        accountDao.createAccount(user);
+        assertEquals("Petr", accountDao.readAccountById(2).getName());
+        user.setName("Maks");
+        accountDao.updateAccount(user);
+        assertEquals("Maks", accountDao.readAccountById(2).getName());
+    }
+
+    @Test
+    public void deleteById() throws SQLException {
+        Account user = new Account();
+        user.setId(2);
+        user.setName("Petr");
+        accountDao.createAccount(user);
+        assertEquals("Petr", accountDao.readAccountById(2).getName());
+        accountDao.deleteById(2);
+        assertNull(accountDao.readAccountById(2));
+    }
+
+    @Test
+    public void readAccountById() {
+        Account user = new Account();
+        user.setId(2);
+        user.setName("Petr");
+        accountDao.createAccount(user);
+        assertEquals("Petr", accountDao.readAccountById(2).getName());
+    }
+
+    @Test
+    public void showAccWithOffset() throws SQLException {
+        Account user = new Account();
+        user.setId(2);
+        user.setName("1");
+        accountDao.createAccount(user);
+        List<Account> accountList = accountDao.showAccWithOffset(1,1, "1", "");
+        assertEquals(accountList.get(0).getName(), user.getName());
+    }
+
+    @Test
+    public void loadPicture() throws SQLException, IOException {
+        accountDao.loadPicture(1, inputStream);
+        assertFalse(accountDao.getImageFromDb(1).isEmpty());
+    }
+
+    @Test
+    public void showAllAccounts() {
+        assertEquals(accountDao.readAccountById(1).getName(), accountDao.showAllAccounts().get(0).getName());
+    }
+}

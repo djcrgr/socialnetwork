@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,12 +22,12 @@ public class AccountService extends AbstractService<Account, Account> {
     private final Connection connection;
 
     public AccountService() throws SQLException, IOException, ClassNotFoundException {
-        connection = connectionPool.getConnection();
+        connection = connectionPool.getThreadConnection();
         this.accountDao = new AccountDao(connection);
         this.phoneDao = new PhoneDao(connection);
     }
 
-    public void freeConnection() {
+    private void freeConnection() {
         connectionPool.free(connection);
     }
 
@@ -99,7 +100,7 @@ public class AccountService extends AbstractService<Account, Account> {
         }
     }
 
-    @Override
+    /*@Override
     public void addFriend(Account account, Account friend) {
         accountDao.addFriend(account, friend);
     }
@@ -107,11 +108,20 @@ public class AccountService extends AbstractService<Account, Account> {
     @Override
     public void removeFriend(Account account, Account friend) {
         accountDao.removeFriend(account, friend);
-    }
+    }*/
 
     public List<Account> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr, String searchStrCopy) throws SQLException {
-        return accountDao.showAccWithOffset(resultOnPage, countCurrentPage * 5 - 5, searchStr,
-                searchStrCopy);
+        List<Account> accountList = new ArrayList<>();
+        try {
+            accountList = accountDao.showAccWithOffset(resultOnPage, countCurrentPage * 5 - 5, searchStr,
+                    searchStrCopy);
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+        } finally {
+            freeConnection();
+        }
+        return accountList;
     }
 
     @Override
@@ -126,10 +136,10 @@ public class AccountService extends AbstractService<Account, Account> {
         }
     }
 
-    @Override
+    /*@Override
     public List<Account> showFriends(Account account) {
         return accountDao.showFriend(account);
-    }
+    }*/
 
     @Override
     public List<Account> showAll() throws SQLException {

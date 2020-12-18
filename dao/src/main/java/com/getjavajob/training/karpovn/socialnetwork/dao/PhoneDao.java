@@ -17,8 +17,7 @@ public class PhoneDao {
     private static final String SELECT_ALL_BY_ID = "select * from phones where userId = ?";
     private static final String DELETE_PHONES_BY_ID = "delete from phones where userId = ?";
 
-    private Connection connection;
-    private ConnectionPool connectionPool;
+    private final Connection connection;
 
     public PhoneDao(Connection connection) throws SQLException {
         this.connection = connection;
