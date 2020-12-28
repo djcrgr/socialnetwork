@@ -1,7 +1,12 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
+import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
+import com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,10 +17,22 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ReadAccServlet extends HttpServlet {
+
+    private AccountDao accountDao;
+    private PhoneDao phoneDao;
+
+    @Override
+    public void init() {
+        WebApplicationContext applicationContext =
+                WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        this.accountDao = applicationContext.getBean(AccountDao.class);
+        this.phoneDao = applicationContext.getBean(PhoneDao.class);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            AccountService accountService = new AccountService();
+            AccountService accountService = new AccountService(accountDao, phoneDao);
             String idString = req.getParameter("idAcc");
             Integer res = (Integer) req.getSession().getAttribute("globalId");
             if (res == null) {
@@ -58,7 +75,7 @@ public class ReadAccServlet extends HttpServlet {
             }
 
             }
-        } catch (SQLException | ClassNotFoundException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }

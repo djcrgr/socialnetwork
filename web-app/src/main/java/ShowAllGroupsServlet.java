@@ -1,6 +1,7 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
 import com.getjavajob.training.karpovn.socialnetwork.service.GroupService;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

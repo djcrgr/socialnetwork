@@ -2,6 +2,7 @@ import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -68,7 +69,7 @@ public class UpdateAccServlet extends HttpServlet {
             req.setAttribute("homePhone", Integer.parseInt(req.getParameter("phoneNumHome")));
             req.setAttribute("workPhone", Integer.parseInt(req.getParameter("phoneNumWork")));
             req.getRequestDispatcher("/WEB-INF/look/profileEdit.jsp").forward(req, resp);
-        } catch (SQLException | ClassNotFoundException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }

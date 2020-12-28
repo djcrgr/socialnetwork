@@ -1,3 +1,4 @@
+/*
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
@@ -122,4 +123,4 @@ public class GroupDaoTest {
         groupDao.loadPicture(1, inputStream);
         assertFalse(groupDao.getImageFromDb(1).isEmpty());
     }
-}
+}*/

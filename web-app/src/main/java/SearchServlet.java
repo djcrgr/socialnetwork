@@ -1,8 +1,14 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
+import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
+import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
+import com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 import com.getjavajob.training.karpovn.socialnetwork.service.GroupService;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchServlet extends HttpServlet {
+
+    private AccountDao accountDao;
+    private PhoneDao phoneDao;
+
+    @Override
+    public void init() {
+        WebApplicationContext applicationContext =
+                WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        this.accountDao = applicationContext.getBean(AccountDao.class);
+        this.phoneDao = applicationContext.getBean(PhoneDao.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -32,27 +49,27 @@ public class SearchServlet extends HttpServlet {
         }
         int recordsPerPage = 5;
         try {
-            AccountService accountService = new AccountService();
+            AccountService accountService = new AccountService(accountDao, phoneDao);
             GroupService groupService = new GroupService();
             List<Group> groups = new ArrayList<>();
             List<Account> resultList = new ArrayList<>();
             List<Account> accountList = accountService.showWithOffset(5, currentPage, searchString, searchString);
-            List<Group> groupList = groupService.showWithOffset(5, currentPageGr, searchString);
-            if (!groupList.isEmpty()) {
-                for (Group group : groupList) {
-                    if (group.getName().toLowerCase().contains(searchString.toLowerCase())) {
-                        groups.add(group);
-                    }
-                }
-                int numberOfPagesGr = groups.size() / recordsPerPage;
-                if (numberOfPagesGr % recordsPerPage > 0) {
-                    numberOfPagesGr++;
-                }
-                req.setAttribute("resultListGroups", groups);
-                req.setAttribute("numberOfPagesGr", numberOfPagesGr);
-                req.setAttribute("currentPageGr", currentPageGr);
-                req.setAttribute("recordsPerPage", recordsPerPage);
-            }
+//            List<Group> groupList = groupService.showWithOffset(5, currentPageGr, searchString);
+//            if (!groupList.isEmpty()) {
+//                for (Group group : groupList) {
+//                    if (group.getName().toLowerCase().contains(searchString.toLowerCase())) {
+//                        groups.add(group);
+//                    }
+//                }
+//                int numberOfPagesGr = groups.size() / recordsPerPage;
+//                if (numberOfPagesGr % recordsPerPage > 0) {
+//                    numberOfPagesGr++;
+//                }
+//                req.setAttribute("resultListGroups", groups);
+//                req.setAttribute("numberOfPagesGr", numberOfPagesGr);
+//                req.setAttribute("currentPageGr", currentPageGr);
+//                req.setAttribute("recordsPerPage", recordsPerPage);
+//            }
             if (!accountList.isEmpty()) {
                 for (Account account : accountList) {
                     if (account.getName().contains(searchString) || account.getSurname().contains(searchString)) {
@@ -71,7 +88,7 @@ public class SearchServlet extends HttpServlet {
             req.setAttribute("name", searchString);
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/look/result.jsp");
             dispatcher.forward(req, resp);
-        } catch (SQLException | ClassNotFoundException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }

@@ -2,6 +2,7 @@ import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -34,33 +35,30 @@ public class RegisterServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String destPage = null;
+        AccountService accountService = null;
+        accountService = new AccountService();
+        int id = accountService.showAll().size() + 6;
+        List<Phone> phoneList = new ArrayList<>();
+        Phone homePhone = new Phone();
+        homePhone.setType("home");
+        homePhone.setNumber(Integer.parseInt(phoneNumHome));
+        Phone workPhone = new Phone();
+        workPhone.setType("work");
+        workPhone.setNumber(Integer.parseInt(phoneNumWork));
+        phoneList.add(homePhone);
+        phoneList.add(workPhone);
+        Account account = new Account(id, name, surname, Integer.parseInt(age), address, phoneList,
+                password, email);
         try {
-            AccountService accountService = new AccountService();
-            int id = accountService.showAll().size() + 6;
-            List<Phone> phoneList = new ArrayList<>();
-            Phone homePhone = new Phone();
-            homePhone.setType("home");
-            homePhone.setNumber(Integer.parseInt(phoneNumHome));
-            Phone workPhone = new Phone();
-            workPhone.setType("work");
-            workPhone.setNumber(Integer.parseInt(phoneNumWork));
-            phoneList.add(homePhone);
-            phoneList.add(workPhone);
-            Account account = new Account(id, name, surname, Integer.parseInt(age), address, phoneList,
-                    password, email);
-            try {
-                accountService.create(account);
-                req.setAttribute("account", account);
-                req.setAttribute("newAccId", account.getId());
-                req.setAttribute("mes", "Account created");
-            } catch (Exception e) {
-                req.setAttribute("mes", "Exist");
-            }
-            destPage = "/WEB-INF/look/register.jsp";
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher(destPage);
-            requestDispatcher.forward(req, resp);
-        } catch (SQLException | ClassNotFoundException throwables) {
-            throwables.printStackTrace();
+            accountService.create(account);
+            req.setAttribute("account", account);
+            req.setAttribute("newAccId", account.getId());
+            req.setAttribute("mes", "Account created");
+        } catch (Exception e) {
+            req.setAttribute("mes", "Exist");
         }
+        destPage = "/WEB-INF/look/register.jsp";
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher(destPage);
+        requestDispatcher.forward(req, resp);
     }
 }

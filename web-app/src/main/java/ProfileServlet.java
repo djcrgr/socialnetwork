@@ -1,21 +1,30 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
-
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class ProfileServlet extends HttpServlet {
+
+    private AccountService accountService;
+
+    @Override
+    public void init() {
+        WebApplicationContext applicationContext =
+                WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        this.accountService = applicationContext.getBean(AccountService.class);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
         if (id != null && id.length() > 0) {
             try {
                 int accId = Integer.parseInt(id);
-                AccountService accountService = new AccountService();
                 Account account = accountService.readById(accId);
                 req.setAttribute("account", account);
                 try {
@@ -31,18 +40,12 @@ public class ProfileServlet extends HttpServlet {
                 dispatcher.forward(req, resp);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             }
         } else {
             RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/look/login.jsp");
             requestDispatcher.forward(req, resp);
         }
-
-
     }
-
-
 }
 
     /*Cookie cookies[] = req.getCookies();
@@ -76,4 +79,3 @@ public class ProfileServlet extends HttpServlet {
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/look/login.jsp");
             dispatcher.forward(req, resp);
         }*/
-

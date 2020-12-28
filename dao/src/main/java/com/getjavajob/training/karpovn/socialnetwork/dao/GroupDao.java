@@ -2,8 +2,14 @@ package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Repository;
+import org.springframework.test.context.ContextConfiguration;
 
 import javax.print.attribute.standard.DateTimeAtCreation;
+import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,9 +18,12 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+@Repository
+@ContextConfiguration(locations = {"classpath:applicationContextDao.xml"})
 public class GroupDao {
 
     private static final String SELECT_ALL = "SELECT * FROM mgroup";
+    private static final String SELECT_ALL_GROUP_ID = "select id from mgroup";
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE id=?";
     private static final String CREATE_GROUP = "INSERT INTO mgroup (id, name, description, ownerId, creationDate) values (?, ?, " +
             "? , ?, ?)";
@@ -25,144 +34,86 @@ public class GroupDao {
     private static final String GET_ACC_ID_FROM_GROUP_WITH_ID = "select userId from groupusers where groupId = ?";
     private static final String GET_ACC_ID_FROM_GROUP = "select userId from groupusers";
     private static final String SHOW_ALL_GROUPS_ID = "select id from mgroup";
+    private static final String ADD_USER_TO_GROUP = "insert into groupusers (userId, groupId) values (? , ?)";
+    private static final String DELETE_USER_FROM_GROUP = "delete from groupusers where userId = ? and groupId = ?";
+    private static final String QUERY_FOR_OFFSET =
+            "select * from mgroup where name like CONCAT( '%',?,'%') limit ? " + "offset ?";
 
-    private Connection connection;
-    private ConnectionPool connectionPool;
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
+    private final AccountDao accountDao;
 
-    public GroupDao() throws SQLException, IOException, ClassNotFoundException {
-        this.connectionPool = ConnectionPool.getInstance();
-        this.connection = connectionPool.getConnection();
-    }
-
-    public GroupDao(Connection connection) throws SQLException {
-        this.connection = connection;
-        this.connection.setAutoCommit(false);
+    @Autowired
+    public GroupDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
+        this.dataSource = dataSource;
+        this.jdbcTemplate = jdbcTemplate;
+        this.accountDao = new AccountDao(dataSource, jdbcTemplate);
     }
 
     public void createGroup(Group group) {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(CREATE_GROUP)) {
-            preparedStatement.setInt(1, group.getId());
-            preparedStatement.setString(2, group.getName());
-            preparedStatement.setString(3, group.getDescription());
-            preparedStatement.setInt(4, group.getOwner().getId());
-            preparedStatement.setDate(5, new Date(System.currentTimeMillis()) );
-            preparedStatement.execute();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
+        this.jdbcTemplate.update(CREATE_GROUP, group.getId(), group.getName(), group.getDescription(),
+                group.getOwner().getId(), new Date(System.currentTimeMillis()));
     }
 
-    public Group readGroupById(int id) throws IOException, ClassNotFoundException, SQLException {
-        try (PreparedStatement prepareStatement = this.connection
-                .prepareStatement(SELECT_BY_ID)) {
-            prepareStatement.setInt(1, id);
-            try (ResultSet resultSet = prepareStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return createGroupFromResult(resultSet);
-                }
-            }
-            return null;
-        }
+    public Group readGroupById(int id) {
+        return this.jdbcTemplate.queryForObject(SELECT_BY_ID, new Object[]{id},
+                (resultSet, i) -> createGroupFromResult(resultSet));
     }
 
     public void updateGroup(Group group) {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(UPDATE_GROUP)) {
-            preparedStatement.setString(1, group.getName());
-            preparedStatement.setString(2, group.getDescription());
-            preparedStatement.setInt(3, group.getOwner().getId());
-            preparedStatement.setInt(4, group.getId());
-            preparedStatement.executeUpdate();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
+        this.jdbcTemplate.update(UPDATE_GROUP, group.getName(), group.getDescription(), group.getOwner().getId(),
+                group.getId());
     }
 
     public void deleteGroupById(int id) {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(DELETE_BY_ID)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
+        this.jdbcTemplate.update(DELETE_BY_ID, id);
+    }
+
+    public String getImageFromDb(int groupId) {
+        Blob result;
+        result = this.jdbcTemplate.queryForObject(GET_PHOTO, Blob.class, groupId);
+        if (result == null) {
+            return getImageFromDb(1);
+        } else {
+            return getString(result);
         }
     }
 
-    public String getImageFromDb(int groupId) throws SQLException, IOException {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(GET_PHOTO)) {
-            preparedStatement.setInt(1, groupId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    Blob blob = resultSet.getBlob("picture");
-                    if (blob == null) {
-                        return getImageFromDb(1);
-                    }
-                    InputStream inputStream = blob.getBinaryStream();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = -1;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                    byte[] imageBytes = outputStream.toByteArray();
-                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    return base64Image;
-                }
-            }
-        }
-        return null;
+    public List<Account> showAllUsers() {
+        return this.jdbcTemplate.query(GET_ACC_ID_FROM_GROUP,
+                ((resultSet, i) -> accountDao.readAccountById(resultSet.getInt("userId"))));
     }
 
-    public List<Account> showAllUsers() throws SQLException, IOException, ClassNotFoundException {
-        List<Account> accountList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = this.connection.prepareStatement(GET_ACC_ID_FROM_GROUP)) {
-            AccountDao accountDao = new AccountDao();
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    accountList.add(accountDao.readAccountById(resultSet.getInt("userId")));
-                }
-            }
-        }
-        return accountList;
+    public void addUserToGroup(Account account, Group group) {
+        this.jdbcTemplate.update(ADD_USER_TO_GROUP, account.getId(), group.getId());
     }
 
-    public List<Group> showAllGroups() throws SQLException, IOException, ClassNotFoundException {
-        List<Group> groupList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(SELECT_ALL)) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    groupList.add(createGroupFromResult(resultSet));
-                }
-            }
+    public void removeUserFromGroup(Account account, Group group) {
+        this.jdbcTemplate.update(DELETE_USER_FROM_GROUP, account.getId(), group.getId());
+    }
+
+    public List<Group> showAllGroups() {
+        return this.jdbcTemplate.query(SELECT_ALL_GROUP_ID,
+                ((resultSet, i) -> readGroupById(resultSet.getInt("id"))));
+    }
+
+    public List<Group> showGroupWithOffset(int limit, int offset, String subStringName) {
+        List<Group> groupList  = new ArrayList<>();
+        SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(QUERY_FOR_OFFSET, new Object[] {subStringName, limit,
+                offset}, new int[] {Types.VARCHAR, Types.INTEGER, Types.INTEGER});
+        while (rowSet.next()) {
+            groupList.add(createGroupFromRowSet(rowSet));
         }
         return groupList;
     }
 
-    public List<Group> showGroupWithOffset(int limit, int offset, String subStringName) throws SQLException, IOException,
-            ClassNotFoundException {
-        List<Group> groupList = new ArrayList<>();
-        try (PreparedStatement preparedStatement =
-                     this.connection.prepareStatement("select * from mgroup " +
-                             "where " +
-                             "name like " +
-                             "CONCAT( " +
-                             "'%',?," +
-                             "'%') "  +
-                             "limit ? offset " +
-                             "?")) {
-            preparedStatement.setString(1, subStringName);
-            preparedStatement.setInt(2, limit);
-            preparedStatement.setInt(3, offset);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    groupList.add(createGroupFromResult(resultSet));
-                }
-            }
-        }
-        return groupList;
+    public void loadPicture(int groupId, InputStream inputStream) {
+        this.jdbcTemplate.update(UPDATE_GROUP_PHOTO, inputStream, groupId);
     }
 
-    private Group createGroupFromResult(ResultSet resultSet) throws SQLException, IOException, ClassNotFoundException {
+    private Group createGroupFromResult(ResultSet resultSet) throws SQLException{
         Group group = new Group();
-        AccountDao accountDao = new AccountDao(connection);
+        AccountDao accountDao = new AccountDao(dataSource, jdbcTemplate);
         group.setId(resultSet.getInt("id"));
         group.setName(resultSet.getString("name"));
         group.setDescription(resultSet.getString("description"));
@@ -171,13 +122,36 @@ public class GroupDao {
         return group;
     }
 
-    public void loadPicture(int groupId, InputStream inputStream) throws SQLException {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(UPDATE_GROUP_PHOTO)) {
-            preparedStatement.setBlob(1, inputStream);
-            preparedStatement.setInt(2, groupId);
-            preparedStatement.executeUpdate();
-        }
+    private Group createGroupFromRowSet(SqlRowSet rowSet) {
+        Group group = new Group();
+        AccountDao accountDao = new AccountDao(dataSource, jdbcTemplate);
+        group.setId(rowSet.getInt("id"));
+        group.setName(rowSet.getString("name"));
+        group.setDescription(rowSet.getString("description"));
+        group.setOwner(accountDao.readAccountById(rowSet.getInt("ownerId")));
+        group.setCreationDate(rowSet.getDate("creationDate"));
+        return group;
     }
 
-
+    private String getString(Blob blob) {
+        InputStream inputStream = null;
+        try {
+            inputStream = blob.getBinaryStream();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        int bytesRead = -1;
+        while (true) {
+            try {
+                if (!((bytesRead = inputStream.read(buffer)) != -1)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        byte[] imageBytes = outputStream.toByteArray();
+        return Base64.getEncoder().encodeToString(imageBytes);
+    }
 }

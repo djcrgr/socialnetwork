@@ -4,7 +4,13 @@ import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -14,11 +20,15 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:applicationContextDao.xml", "classpath:applicationContextDaoOver.xml"})
 public class AccountDaoTest {
 
     private Connection connection;
-    private AccountDao accountDao;
+    @Autowired
+	private AccountDao accountDao;
+    @Autowired
+    private DataSource dataSource;
     private InputStream inputStream;
 
     @Before
@@ -29,13 +39,12 @@ public class AccountDaoTest {
         String create = properties.getProperty("database.createAcc");
         String fill = properties.getProperty("database.fill");
         String createFriendsInDb = properties.getProperty("database.createFriends");
-        this.connection = ConnectionPool.getInstance().getConnection();
+        this.connection = dataSource.getConnection();
         Statement statement = this.connection.createStatement();
         statement.execute(create);
         statement.execute(fill);
         statement.execute(createFriendsInDb);
-        accountDao = new AccountDao(connection);
-        ConnectionPool.getInstance().free(connection);
+        this.connection.close();
     }
 
     @After
@@ -44,11 +53,11 @@ public class AccountDaoTest {
         properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
         String clean = properties.getProperty("database.cleanAcc");
         String cleanFriendsTable = properties.getProperty("database.cleanFriends");
-        this.connection = ConnectionPool.getInstance().getConnection();
+        this.connection = dataSource.getConnection();
         Statement statement = this.connection.createStatement();
         statement.execute(clean);
         statement.execute(cleanFriendsTable);
-        ConnectionPool.getInstance().free(connection);
+        this.connection.close();
     }
 
     @Test
@@ -90,8 +99,8 @@ public class AccountDaoTest {
         assertEquals("Maks", accountDao.readAccountById(2).getName());
     }
 
-    @Test
-    public void deleteById() throws SQLException {
+    @Test (expected = EmptyResultDataAccessException.class)
+    public void deleteById() {
         Account user = new Account();
         user.setId(2);
         user.setName("Petr");

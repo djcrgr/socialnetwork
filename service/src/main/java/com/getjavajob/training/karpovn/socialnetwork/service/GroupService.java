@@ -2,100 +2,47 @@ package com.getjavajob.training.karpovn.socialnetwork.service;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
-import com.getjavajob.training.karpovn.socialnetwork.dao.ConnectionPool;
 import com.getjavajob.training.karpovn.socialnetwork.dao.GroupDao;
-import org.postgresql.core.SqlCommand;
-
-import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class GroupService extends AbstractService<Group, Account>{
 
-    private final GroupDao groupDao;
+    private GroupDao groupDao;
 
-    private final Connection connection;
-    private final ConnectionPool connectionPool;
-
-    public GroupService() throws SQLException, IOException, ClassNotFoundException {
-        connectionPool = ConnectionPool.getInstance();
-        this.connection = connectionPool.getThreadConnection();
-        this.groupDao = new GroupDao(connection);
-    }
-
-    private void freeConnection() {
-        connectionPool.free(connection);
+    @Autowired
+    public GroupService(GroupDao groupDao){
+        this.groupDao = groupDao;
     }
 
     @Override
-    public void create(Group group) throws SQLException {
-        try {
+    public void create(Group group){
         groupDao.createGroup(group);
-        connection.commit();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            connection.rollback();
-        } finally {
-            freeConnection();
-        }
+
     }
 
     @Override
-    public Group readById(int id) throws SQLException, IOException, ClassNotFoundException {
-        Group group = null;
-        try {
-            group= groupDao.readGroupById(id);
-            connection.commit();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            connection.rollback();
-        } finally {
-            freeConnection();
-        }
-        return group;
+    public Group readById(int id) {
+        return groupDao.readGroupById(id);
     }
 
     @Override
-    public String getImageFromDb(int id) throws IOException, SQLException {
-        String image = null;
-        try {
-            image = groupDao.getImageFromDb(id);
-            connection.commit();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            connection.rollback();
-        } finally {
-            freeConnection();
-        }
-        return image;
+    public String getImageFromDb(int id) {
+        return groupDao.getImageFromDb(id);
     }
 
     @Override
-    public void update(Group group) throws SQLException {
-        try {
+    public void update(Group group){
         groupDao.updateGroup(group);
-        connection.commit();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            connection.rollback();
-        } finally {
-            freeConnection();
-        }
     }
 
     @Override
-    public void delete(Group group) throws SQLException {
-        try {
+    public void delete(Group group){
         groupDao.deleteGroupById(group.getId());
-        } catch (Exception throwables) {
-            throwables.printStackTrace();
-            connection.rollback();
-        } finally {
-            freeConnection();
-        }
     }
 
    /* @Override
@@ -108,29 +55,13 @@ public class GroupService extends AbstractService<Group, Account>{
         throw new UnsupportedOperationException();
     }*/
 
-    public List<Group> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr) throws SQLException{
-        List<Group> groups = new ArrayList<>();
-        try {
-            groups = groupDao.showGroupWithOffset(resultOnPage, countCurrentPage * 5 - 5, searchStr);
-            connection.commit();
-        } catch (Exception e) {
-            connection.rollback();
-        } finally {
-            freeConnection();
-        }
-        return groups;
+    public List<Group> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr) {
+        return groupDao.showGroupWithOffset(resultOnPage, countCurrentPage * 5 - 5, searchStr);
     }
 
     @Override
     public void loadPicture(int id, InputStream inputStream) throws SQLException {
-        try {
         groupDao.loadPicture(id, inputStream);
-        connection.commit();
-        } catch (Exception e) {
-            connection.rollback();
-        } finally {
-            freeConnection();
-        }
     }
 
     /*@Override
@@ -139,21 +70,12 @@ public class GroupService extends AbstractService<Group, Account>{
     }*/
 
     @Override
-    public List<Group> showAll() throws SQLException, IOException, ClassNotFoundException {
-       List<Group> groups = new ArrayList<>();
-       try {
-           groups = groupDao.showAllGroups();
-           connection.commit();
-       } catch (Exception e) {
-           connection.rollback();
-       } finally {
-           freeConnection();
-       }
-        return groups;
+    public List<Group> showAll() {
+        return groupDao.showAllGroups();
     }
 
     @Override
-    Group checkExisting(String email, String password) throws SQLException {
+    Group checkExisting(String email, String password) {
         throw new UnsupportedOperationException();
     }
 }
