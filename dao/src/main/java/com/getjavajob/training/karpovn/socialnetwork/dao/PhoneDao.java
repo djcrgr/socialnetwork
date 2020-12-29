@@ -27,9 +27,11 @@ public class PhoneDao {
 			"and userId = ?";
 
 	private final JdbcTemplate jdbcTemplate;
+	private final DataSource dataSource;
 
 	@Autowired
 	public PhoneDao(DataSource dataSource, JdbcTemplate jdbcTemplate) throws SQLException {
+		this.dataSource = dataSource;
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class GroupService extends AbstractService<Group, Account>{
 
-    private GroupDao groupDao;
+    private final GroupDao groupDao;
 
     @Autowired
     public GroupService(GroupDao groupDao){

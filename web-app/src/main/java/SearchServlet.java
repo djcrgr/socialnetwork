@@ -21,15 +21,15 @@ import java.util.List;
 
 public class SearchServlet extends HttpServlet {
 
-    private AccountDao accountDao;
-    private PhoneDao phoneDao;
+    private AccountService accountService;
+    private GroupService groupService;
 
     @Override
     public void init() {
         WebApplicationContext applicationContext =
                 WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-        this.accountDao = applicationContext.getBean(AccountDao.class);
-        this.phoneDao = applicationContext.getBean(PhoneDao.class);
+        this.accountService = applicationContext.getBean(AccountService.class);
+        this.groupService = applicationContext.getBean(GroupService.class);
     }
 
     @Override
@@ -49,27 +49,25 @@ public class SearchServlet extends HttpServlet {
         }
         int recordsPerPage = 5;
         try {
-            AccountService accountService = new AccountService(accountDao, phoneDao);
-            GroupService groupService = new GroupService();
             List<Group> groups = new ArrayList<>();
             List<Account> resultList = new ArrayList<>();
             List<Account> accountList = accountService.showWithOffset(5, currentPage, searchString, searchString);
-//            List<Group> groupList = groupService.showWithOffset(5, currentPageGr, searchString);
-//            if (!groupList.isEmpty()) {
-//                for (Group group : groupList) {
-//                    if (group.getName().toLowerCase().contains(searchString.toLowerCase())) {
-//                        groups.add(group);
-//                    }
-//                }
-//                int numberOfPagesGr = groups.size() / recordsPerPage;
-//                if (numberOfPagesGr % recordsPerPage > 0) {
-//                    numberOfPagesGr++;
-//                }
-//                req.setAttribute("resultListGroups", groups);
-//                req.setAttribute("numberOfPagesGr", numberOfPagesGr);
-//                req.setAttribute("currentPageGr", currentPageGr);
-//                req.setAttribute("recordsPerPage", recordsPerPage);
-//            }
+            List<Group> groupList = groupService.showWithOffset(5, currentPageGr, searchString);
+            if (!groupList.isEmpty()) {
+                for (Group group : groupList) {
+                    if (group.getName().toLowerCase().contains(searchString.toLowerCase())) {
+                        groups.add(group);
+                    }
+                }
+                int numberOfPagesGr = groups.size() / recordsPerPage;
+                if (numberOfPagesGr % recordsPerPage > 0) {
+                    numberOfPagesGr++;
+                }
+                req.setAttribute("resultListGroups", groups);
+                req.setAttribute("numberOfPagesGr", numberOfPagesGr);
+                req.setAttribute("currentPageGr", currentPageGr);
+                req.setAttribute("recordsPerPage", recordsPerPage);
+            }
             if (!accountList.isEmpty()) {
                 for (Account account : accountList) {
                     if (account.getName().contains(searchString) || account.getSurname().contains(searchString)) {

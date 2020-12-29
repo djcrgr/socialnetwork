@@ -1,9 +1,8 @@
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
-
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateAccServlet extends HttpServlet {
+
+    private AccountService accountService;
+
+    @Override
+    public void init() {
+        WebApplicationContext applicationContext =
+                WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        this.accountService = applicationContext.getBean(AccountService.class);
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            AccountService accountService = new AccountService();
             Account account = new Account();
             String id = req.getParameter("idAccount");
             int idAcc = Integer.parseInt(id);
