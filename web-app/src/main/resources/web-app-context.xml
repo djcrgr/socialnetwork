@@ -2,26 +2,22 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <jee:jndi-lookup jndi-name="jdbc/webapp" id="dataSource" expected-type="javax.sql.DataSource"/>
     <context:component-scan base-package="com.getjavajob.training.karpovn.socialnetwork.dao"/>
     <context:component-scan base-package="com.getjavajob.training.karpovn.socialnetwork.service"/>
 
-    <!--<bean id="accountDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="jdbcTemplate"/>
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
-
-    <bean id="phoneDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="jdbcTemplate"/>
-    </bean>-->
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <constructor-arg ref="dataSource"/>
     </bean>
 
+    <tx:annotation-driven transaction-manager="txManager"/>
 </beans>

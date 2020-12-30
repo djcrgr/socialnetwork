@@ -46,7 +46,7 @@ public class RegisterServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String destPage = null;
-        int id = accountService.showAll().size() + 6;
+        int id = accountService.showAll().size() + 10;
         List<Phone> phoneList = new ArrayList<>();
         Phone homePhone = new Phone();
         homePhone.setType("home");

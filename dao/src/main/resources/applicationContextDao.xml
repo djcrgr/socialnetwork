@@ -8,15 +8,4 @@
     <context:component-scan base-package="com.getjavajob.training.karpovn.socialnetwork.dao"/>
     <jee:jndi-lookup jndi-name="jdbc/webapp" id="dataSource" expected-type="javax.sql.DataSource"/>
 
-    <!--<context:property-placeholder location="classpath:database.properties"/>
-    <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="${database.url}}" />
-        <property name="username" value="${database.username}" />
-        <property name="password" value="${database.password}" />
-    </bean>-->
-
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <constructor-arg ref="dataSource"/>
-    </bean>
 </beans>

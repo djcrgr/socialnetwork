@@ -5,6 +5,8 @@ import com.getjavajob.training.karpovn.socialnetwork.common.Group;
 import com.getjavajob.training.karpovn.socialnetwork.dao.GroupDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,27 +21,31 @@ public class GroupService extends AbstractService<Group, Account>{
         this.groupDao = groupDao;
     }
 
+    @Transactional
     @Override
     public void create(Group group){
         groupDao.createGroup(group);
-
     }
 
+    @Transactional
     @Override
     public Group readById(int id) {
         return groupDao.readGroupById(id);
     }
 
+    @Transactional
     @Override
     public String getImageFromDb(int id) {
         return groupDao.getImageFromDb(id);
     }
 
+    @Transactional
     @Override
     public void update(Group group){
         groupDao.updateGroup(group);
     }
 
+    @Transactional
     @Override
     public void delete(Group group){
         groupDao.deleteGroupById(group.getId());
@@ -59,6 +65,7 @@ public class GroupService extends AbstractService<Group, Account>{
         return groupDao.showGroupWithOffset(resultOnPage, countCurrentPage * 5 - 5, searchStr);
     }
 
+    @Transactional
     @Override
     public void loadPicture(int id, InputStream inputStream) throws SQLException {
         groupDao.loadPicture(id, inputStream);
@@ -69,11 +76,13 @@ public class GroupService extends AbstractService<Group, Account>{
         throw new UnsupportedOperationException();
     }*/
 
+    @Transactional
     @Override
     public List<Group> showAll() {
         return groupDao.showAllGroups();
     }
 
+    @Transactional
     @Override
     Group checkExisting(String email, String password) {
         throw new UnsupportedOperationException();

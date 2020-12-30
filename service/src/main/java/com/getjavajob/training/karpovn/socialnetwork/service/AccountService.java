@@ -5,6 +5,8 @@ import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
 import com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -22,12 +24,14 @@ public class AccountService extends AbstractService<Account, Account> {
 		this.phoneDao = phoneDao;
 	}
 
+	@Transactional
 	@Override
 	public void create(Account account) {
 		accountDao.createAccount(account);
 		phoneDao.createAccPhones(account);
 	}
 
+	@Transactional
 	@Override
 	public Account readById(int id) {
 		Account account = accountDao.readAccountById(id);
@@ -35,17 +39,20 @@ public class AccountService extends AbstractService<Account, Account> {
 		return account;
 	}
 
+	@Transactional
 	@Override
 	public String getImageFromDb(int id) throws IOException, SQLException {
 		return accountDao.getImageFromDb(id);
 	}
 
+	@Transactional
 	@Override
 	public void update(Account account) throws SQLException {
 		accountDao.updateAccount(account);
 		phoneDao.updateAccPhones(account);
 	}
 
+	@Transactional
 	@Override
 	public void delete(Account account) throws SQLException {
 		accountDao.deleteById(account.getId());
@@ -67,6 +74,7 @@ public class AccountService extends AbstractService<Account, Account> {
 				searchStrCopy);
 	}
 
+	@Transactional
 	@Override
 	public void loadPicture(int id, InputStream inputStream) throws SQLException {
 		accountDao.loadPicture(id, inputStream);
@@ -77,11 +85,13 @@ public class AccountService extends AbstractService<Account, Account> {
         return accountDao.showFriend(account);
     }*/
 
+	@Transactional
 	@Override
 	public List<Account> showAll() {
 		return accountDao.showAllAccounts();
 	}
 
+	@Transactional
 	@Override
 	public Account checkExisting(String email, String password) throws SQLException {
 		Account account = accountDao.checkForLogin(email, password);

@@ -1,8 +1,10 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import jdk.nashorn.internal.objects.annotations.Constructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,7 +41,7 @@ public class AccountDao {
 	private static final String GET_PHOTO = "select photo from account where id = ?";
 	private static final String QUERY_FOR__OFFSET = "select * from account where name like CONCAT( '%' ,?, '%') union " +
 			"select * from account where surname like CONCAT( '%',?,'%') limit ? offset ?";
-	private static final String QUERY_EMAIL_PASS = "SELECT distinct * FROM account WHERE email = ? and password = ?";
+	private static final String QUERY_EMAIL_PASS = "SELECT id FROM account WHERE email = ? and password = ?";
 	private static final String QUERY_FOR_COUNT = "select count(*) as result from account";
 
 
@@ -98,7 +100,12 @@ public class AccountDao {
 
 	public Account checkForLogin(String email, String password) {
 		return this.jdbcTemplate.queryForObject(QUERY_EMAIL_PASS, new Object[]{email, password},
-				(resultSet, i) -> createAccountFromResult(resultSet));
+				new RowMapper<Account>() {
+					@Override
+					public Account mapRow(ResultSet resultSet, int i) throws SQLException {
+						return AccountDao.this.readAccountById(resultSet.getInt("id"));
+					}
+				});
 	}
 
 	public void createAccount(Account account) {
