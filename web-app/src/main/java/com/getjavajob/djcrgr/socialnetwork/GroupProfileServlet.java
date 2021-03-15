@@ -1,3 +1,5 @@
+package com.getjavajob.djcrgr.socialnetwork;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 import com.getjavajob.training.karpovn.socialnetwork.service.GroupService;
@@ -16,21 +18,31 @@ public class GroupProfileServlet extends HttpServlet {
 
     private GroupService groupService;
 
-    @Override
+  /*  @Override
     public void init() {
         WebApplicationContext applicationContext =
                 WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         this.groupService = applicationContext.getBean(GroupService.class);
     }
-
+*/
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String groupId = req.getParameter("groupId");
         if (!groupId.isEmpty()) {
             int id = Integer.parseInt(groupId);
-            Group group = groupService.readById(id);
+            Group group = null;
+            try {
+                group = groupService.readById(id);
+            } catch (SQLException | ClassNotFoundException throwables) {
+                throwables.printStackTrace();
+            }
             req.setAttribute("group", group);
-            String picture = groupService.getImageFromDb(id);
+            String picture = null;
+            try {
+                picture = groupService.getImageFromDb(id);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
             req.setAttribute("picture", picture);
             req.getRequestDispatcher("/WEB-INF/look/group.jsp").forward(req, resp);
         } else {

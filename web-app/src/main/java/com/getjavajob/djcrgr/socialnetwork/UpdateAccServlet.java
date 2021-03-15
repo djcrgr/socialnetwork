@@ -1,3 +1,5 @@
+package com.getjavajob.djcrgr.socialnetwork;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
@@ -16,15 +18,9 @@ public class UpdateAccServlet extends HttpServlet {
 
     private AccountService accountService;
 
-    @Override
-    public void init() {
-        WebApplicationContext applicationContext =
-                WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-        this.accountService = applicationContext.getBean(AccountService.class);
-    }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Account account = new Account();
             String id = req.getParameter("idAccount");
@@ -48,13 +44,13 @@ public class UpdateAccServlet extends HttpServlet {
             List<Phone> phones = new ArrayList<>();
             if (!req.getParameter("phoneNumHome").equals("")) {
                 Phone homePhone = new Phone();
-                homePhone.setNumber(Integer.parseInt(req.getParameter("phoneNumHome")));
+                homePhone.setNumber(req.getParameter("phoneNumHome"));
                 homePhone.setType("home");
                 phones.add(homePhone);
             }
             if (!req.getParameter("phoneNumWork").equals("")) {
                 Phone workPhone = new Phone();
-                workPhone.setNumber(Integer.parseInt(req.getParameter("phoneNumWork")));
+                workPhone.setNumber(req.getParameter("phoneNumWork"));
                 workPhone.setType("work");
                 phones.add(workPhone);
             }
@@ -74,8 +70,8 @@ public class UpdateAccServlet extends HttpServlet {
             req.setAttribute("image", image);
             req.setAttribute("currentAcc", accountService.readById(account.getId()));
             req.setAttribute("idAcc", idAcc);
-            req.setAttribute("homePhone", Integer.parseInt(req.getParameter("phoneNumHome")));
-            req.setAttribute("workPhone", Integer.parseInt(req.getParameter("phoneNumWork")));
+            req.setAttribute("homePhone", req.getParameter("phoneNumHome"));
+            req.setAttribute("workPhone", req.getParameter("phoneNumWork"));
             req.getRequestDispatcher("/WEB-INF/look/profileEdit.jsp").forward(req, resp);
         } catch (SQLException throwables) {
             throwables.printStackTrace();

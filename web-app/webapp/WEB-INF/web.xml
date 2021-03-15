@@ -7,25 +7,58 @@
         <session-timeout>10</session-timeout>
     </session-config>
     <resource-ref>
-        <res-ref-name>
-            jdbc/webapp
-        </res-ref-name>
-        <res-type>
-            javax.sql.DataSource
-        </res-type>
-        <res-auth>
-            Container
-        </res-auth>
+        <description>DB</description>
+        <res-ref-name>jdbc/webapp</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
     </resource-ref>
+
+
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/web-servlet.xml</param-value>
+    </context-param>
+
+
+
     <servlet>
-        <servlet-name>index</servlet-name>
-        <jsp-file>/WEB-INF/look/index.jsp</jsp-file>
+        <servlet-name>web</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
+
     <servlet-mapping>
-        <servlet-name>index</servlet-name>
+        <servlet-name>web</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <servlet>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>CookieFilter</filter-name>
+        <filter-class>com.getjavajob.djcrgr.socialnetwork.filters.CookieFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CookieFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
+
+
+
+    <!-- <servlet>
+        <servlet-name>index</servlet-name>
+        <jsp-file>/WEB-INF/look/index.jsp</jsp-file>
+    </servlet>-->
+   <!-- <servlet>
         <servlet-name>loginJsp</servlet-name>
         <jsp-file>/WEB-INF/look/login.jsp</jsp-file>
     </servlet>
@@ -88,16 +121,16 @@
     <servlet-mapping>
         <servlet-name>profile</servlet-name>
         <url-pattern>/profile</url-pattern>
-    </servlet-mapping>
-    <filter>
+    </servlet-mapping>-->
+   <!-- <filter>
         <filter-name>CookieFilter</filter-name>
         <filter-class>CookieFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>CookieFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <servlet>
+    </filter-mapping>-->
+    <!--<servlet>
         <servlet-name>search</servlet-name>
         <servlet-class>SearchServlet</servlet-class>
     </servlet>
@@ -161,11 +194,14 @@
         <servlet-name>group</servlet-name>
         <url-pattern>/group</url-pattern>
     </servlet-mapping>
-    <context-param>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/resourses/*</url-pattern>
+    </servlet-mapping>-->
+    <!--<context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:web-app-context.xml</param-value>
-    </context-param>
-    <listener>
+        <param-value>classpath:src/test/web-app-context.xml</param-value>
+    </context-param>-->
+    <!--<listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-</web-app>
+    </listener>-->

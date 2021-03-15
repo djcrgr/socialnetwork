@@ -1,11 +1,14 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Phone {
 
-    private int number;
+    private String number;
     private String type;
 
-    public Phone(int number, String type) {
+    public Phone(String number, String type) {
         this.number = number;
         this.type = type;
     }
@@ -13,11 +16,19 @@ public class Phone {
     public Phone() {
     }
 
-    public int getNumber() {
+    @Override
+    public String toString() {
+        return "Phone{" +
+                "number='" + number + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
+
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
@@ -27,13 +38,5 @@ public class Phone {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "Phone{" +
-                "number=" + number +
-                ", type='" + type + '\'' +
-                '}';
     }
 }

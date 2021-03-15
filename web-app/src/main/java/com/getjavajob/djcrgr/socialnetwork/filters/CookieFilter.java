@@ -1,22 +1,26 @@
+package com.getjavajob.djcrgr.socialnetwork.filters;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
-import com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.naming.NamingException;
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
+@Component
+@Order(1)
 public class CookieFilter implements Filter {
 
-    private AccountService accountService;
+
     private FilterConfig filterConfig;
+    private AccountService accountService;
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -47,8 +51,12 @@ public class CookieFilter implements Filter {
         }
         }
         if (email != null && password != null) {
-        try {
-            Account account = accountService.checkExisting(email, password);
+            Account account = null;
+            try {
+                account = accountService.checkExisting(email, password);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
             if (account != null) {
             request.setAttribute("message", "u r logged in");
             request.getSession().setAttribute("globalId", account.getId());
@@ -56,9 +64,7 @@ public class CookieFilter implements Filter {
                 request.setAttribute("message", "please login");
             }
             filterChain.doFilter(request, servletResponse);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+
         } else {
             request.setAttribute("message", "please login");
             filterChain.doFilter(request, servletResponse);

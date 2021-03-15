@@ -9,13 +9,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 
 import javax.sql.DataSource;
-import javax.sql.RowSet;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-@ContextConfiguration(locations = {"classpath:applicationContextDao.xml"})
 public class PhoneDao {
 
 	private static final String CREATE_PHONE = "insert into phones (userId, phoneNum, phoneType) values (?, ?, ?)";
@@ -55,7 +53,7 @@ public class PhoneDao {
 
 	private Phone setPhone(SqlRowSet rowSet) {
 		Phone phone = new Phone();
-		phone.setNumber(rowSet.getInt("phoneNum"));
+		phone.setNumber(rowSet.getString("phoneNum"));
 		phone.setType(rowSet.getString("phoneType"));
 		return phone;
 	}

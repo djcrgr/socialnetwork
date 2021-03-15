@@ -1,3 +1,5 @@
+package com.getjavajob.djcrgr.socialnetwork;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 import org.springframework.web.context.WebApplicationContext;
@@ -11,6 +13,7 @@ import java.sql.SQLException;
 public class ProfileServlet extends HttpServlet {
 
     private AccountService accountService;
+/*
 
     @Override
     public void init() {
@@ -18,6 +21,7 @@ public class ProfileServlet extends HttpServlet {
                 WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         this.accountService = applicationContext.getBean(AccountService.class);
     }
+*/
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

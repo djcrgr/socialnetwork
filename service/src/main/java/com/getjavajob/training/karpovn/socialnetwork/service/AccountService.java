@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-public class AccountService extends AbstractService<Account, Account> {
+public class AccountService extends AbstractService<Account> {
 
 	private final AccountDao accountDao;
 	private final PhoneDao phoneDao;
@@ -87,7 +87,7 @@ public class AccountService extends AbstractService<Account, Account> {
 
 	@Transactional
 	@Override
-	public List<Account> showAll() {
+	public List<Account> showAll() throws SQLException {
 		return accountDao.showAllAccounts();
 	}
 

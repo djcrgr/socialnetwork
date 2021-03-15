@@ -1,3 +1,5 @@
+package com.getjavajob.djcrgr.socialnetwork;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
@@ -24,13 +26,6 @@ public class SearchServlet extends HttpServlet {
     private AccountService accountService;
     private GroupService groupService;
 
-    @Override
-    public void init() {
-        WebApplicationContext applicationContext =
-                WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-        this.accountService = applicationContext.getBean(AccountService.class);
-        this.groupService = applicationContext.getBean(GroupService.class);
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

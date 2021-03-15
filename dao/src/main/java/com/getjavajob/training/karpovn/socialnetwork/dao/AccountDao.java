@@ -1,13 +1,10 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import jdk.nashorn.internal.objects.annotations.Constructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Repository;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.stereotype.Component;
 
 
 import javax.sql.DataSource;
@@ -19,8 +16,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-@Repository
-@ContextConfiguration(locations = {"classpath:applicationContextDao.xml"})
+@Component
 public class AccountDao {
 
 	private static final String SELECT_ALL = "select * from account";
@@ -100,12 +96,7 @@ public class AccountDao {
 
 	public Account checkForLogin(String email, String password) {
 		return this.jdbcTemplate.queryForObject(QUERY_EMAIL_PASS, new Object[]{email, password},
-				new RowMapper<Account>() {
-					@Override
-					public Account mapRow(ResultSet resultSet, int i) throws SQLException {
-						return AccountDao.this.readAccountById(resultSet.getInt("id"));
-					}
-				});
+				(resultSet, i) -> AccountDao.this.readAccountById(resultSet.getInt("id")));
 	}
 
 	public void createAccount(Account account) {
@@ -143,7 +134,7 @@ public class AccountDao {
 		this.jdbcTemplate.update(UPDATE_ACC_PHOTO, inputStream, accountId);
 	}
 
-	public List<Account> showAllAccounts() {
+	public List<Account> showAllAccounts() throws SQLException {
 		return this.jdbcTemplate.query(SELECT_ALL_BY_ID, (resultSet, i) -> readAccountById(resultSet.getInt("id")));
 	}
 

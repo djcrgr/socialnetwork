@@ -1,121 +1,16 @@
-<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="accService" class="com.getjavajob.training.karpovn.socialnetwork.service.AccountService"
-             scope="application" />
-<!DOCTYPE html>
-<html >
-<head >
-    <title >login page</title >
-</head >
-<style >
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333333;
-    }
-
-    li {
-        float: left;
-    }
-
-    li a {
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 16px;
-        text-decoration: none;
-    }
-
-    li a:hover {
-        background-color: #111111;
-    }
-</style >
-</head>
-<body >
-<ul >
-    <li ><a href="profile" >Home</a ></li >
-    <li ><a href="loginJsp" >Login</a ></li >
-    <li ><a href="registerJsp" >Registration</a ></li >
-    <li ><a href="logout" >logout</a ></li >
-    <br >
-    <li >
-        <form action="search" method="GET" >Search <input type="text" name="name">
-            </form >
-    </li >
-</ul >
-<table border=1 cellpadding=5 >
-    <h1 >hello ${account.name}</h1 >
-    <jsp:useBean id="account" class="com.getjavajob.training.karpovn.socialnetwork.common.Account" />
-    <c:forEach var="account" items="${requestScope.resultList}" >
-        <tr >
-            <td ><a href="profile" methods="get" name="${account}">${account.name}</a> </td >
-            <td >${account.surname}</td >
-        </tr >
-    </c:forEach >
-</table >
-
-</body >
-</html >--%>
-
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
+
 <head >
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title >test</title >
-    <style type="text/css" >
-        body {
-            font: 10pt Arial, Helvetica, sans-serif; /* Шрифт на веб-странице */
-            background: #e1dfb9; /* Цвет фона */
-        }
-
-        h2 {
-            font-size: 1.1em; /* Размер шрифта */
-            color: #800040; /* Цвет текста */
-            margin-top: 0; /* Отступ сверху */
-        }
-
-        #container {
-            height: 20cm;
-            width: 500px; /* Ширина слоя */
-            margin: 0 auto; /* Выравнивание по центру */
-            background: #5f5f5f; /* Цвет фона левой колонки */
-        }
-
-        #header {
-            font-size: 2.2em; /* Размер текста */
-            text-align: center; /* Выравнивание по центру */
-            padding: 5px; /* Отступы вокруг текста */
-            background: #8fa09b; /* Цвет фона шапки */
-            color: #ffe; /* Цвет текста */
-        }
-
-        #sidebar {
-            margin-top: 10px;
-            width: 110px; /* Ширина слоя */
-            padding: 10px; /* Отступы вокруг текста */
-            float: left; /* Обтекание по правому краю */
-        }
-
-        #content {
-            height: 100%;
-            margin-left: 130px; /* Отступ слева */
-            padding: 10px; /* Поля вокруг текста */
-            background: #c4daf3; /* Цвет фона правой колонки */
-        }
-
-        #footer {
-            background: #8fa09b; /* Цвет фона подвала */
-            color: #fff; /* Цвет текста */
-            padding: 5px; /* Отступы вокруг текста */
-            clear: left; /* Отменяем действие float */
-        }
-    </style >
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+    <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <title >social-network</title >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous" >
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+            crossorigin="anonymous" ></script >
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/js/validationTel.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/js/myScript.js"></script>
 </head >
 <body >
 <div id="content" >
@@ -164,20 +59,3 @@
     <div id="footer" >&copy; djcrgr@gmail.com</div >
 </div >
 </body >
-</html >
-
-<%--
-<ol >
-    <c:forEach var="account" items="${requestScope.resultList}" >
-        <li >
-            <tr >
-                <td ><a href="profile?id=${account.id}" >${account.name}</a ></td >
-                <td >${account.surname}</td >
-            </tr >
-        </li >
-        <p ><a
-                href="search?name=${requestScope.name}&limit=5&offset=5*(${requestScope.countPages}-1)" >
-                ${requestScope.countPages}</a >
-        </p >
-    </c:forEach >
-</ol >--%>

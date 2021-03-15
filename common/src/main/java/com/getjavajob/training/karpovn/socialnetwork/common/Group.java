@@ -1,8 +1,11 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import org.springframework.stereotype.Component;
+
 import java.sql.Date;
 import java.util.List;
 
+@Component
 public class Group {
 
     private int id;

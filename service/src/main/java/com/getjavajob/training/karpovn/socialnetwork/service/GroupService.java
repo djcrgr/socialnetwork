@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-public class GroupService extends AbstractService<Group, Account>{
+public class GroupService extends AbstractService<Group>{
 
     private final GroupDao groupDao;
 
@@ -29,13 +29,13 @@ public class GroupService extends AbstractService<Group, Account>{
 
     @Transactional
     @Override
-    public Group readById(int id) {
+    public Group readById(int id) throws SQLException, ClassNotFoundException {
         return groupDao.readGroupById(id);
     }
 
     @Transactional
     @Override
-    public String getImageFromDb(int id) {
+    public String getImageFromDb(int id) throws SQLException{
         return groupDao.getImageFromDb(id);
     }
 
@@ -78,7 +78,7 @@ public class GroupService extends AbstractService<Group, Account>{
 
     @Transactional
     @Override
-    public List<Group> showAll() {
+    public List<Group> showAll() throws SQLException, ClassNotFoundException {
         return groupDao.showAllGroups();
     }
 

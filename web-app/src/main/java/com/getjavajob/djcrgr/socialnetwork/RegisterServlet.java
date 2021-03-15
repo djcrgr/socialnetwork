@@ -1,3 +1,5 @@
+package com.getjavajob.djcrgr.socialnetwork;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
@@ -18,6 +20,7 @@ import java.util.List;
 public class RegisterServlet extends HttpServlet {
 
     private AccountService accountService;
+/*
 
     @Override
     public void init() {
@@ -25,6 +28,7 @@ public class RegisterServlet extends HttpServlet {
                 WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         this.accountService = applicationContext.getBean(AccountService.class);
     }
+*/
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,14 +50,19 @@ public class RegisterServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String destPage = null;
-        int id = accountService.showAll().size() + 10;
+        int id = 0;
+        try {
+            id = accountService.showAll().size() + 10;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         List<Phone> phoneList = new ArrayList<>();
         Phone homePhone = new Phone();
         homePhone.setType("home");
-        homePhone.setNumber(Integer.parseInt(phoneNumHome));
+        homePhone.setNumber(phoneNumHome);
         Phone workPhone = new Phone();
         workPhone.setType("work");
-        workPhone.setNumber(Integer.parseInt(phoneNumWork));
+        workPhone.setNumber(phoneNumWork);
         phoneList.add(homePhone);
         phoneList.add(workPhone);
         Account account = new Account(id, name, surname, Integer.parseInt(age), address, phoneList,

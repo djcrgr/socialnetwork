@@ -1,3 +1,5 @@
+package com.getjavajob.djcrgr.socialnetwork;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
@@ -20,19 +22,20 @@ public class ReadAccServlet extends HttpServlet {
 
     private AccountDao accountDao;
     private PhoneDao phoneDao;
+    private AccountService accountService;
 
-    @Override
+ /*   @Override
     public void init() {
         WebApplicationContext applicationContext =
                 WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         this.accountDao = applicationContext.getBean(AccountDao.class);
         this.phoneDao = applicationContext.getBean(PhoneDao.class);
+        this.accountService = applicationContext.getBean(AccountService.class);
     }
-
+*/
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            AccountService accountService = new AccountService(accountDao, phoneDao);
             String idString = req.getParameter("idAcc");
             Integer res = (Integer) req.getSession().getAttribute("globalId");
             if (res == null) {
@@ -47,8 +50,8 @@ public class ReadAccServlet extends HttpServlet {
                         if (id == res) {
                         Account account = accountService.readById(id);
                         List<Phone> phoneList = account.getPhoneNum();
-                        int homePhone = 0;
-                        int workPhone = 0;
+                        String workPhone = "";
+                        String homePhone = "";
                             for (Phone phone : phoneList) {
                                 if (phone.getType() != null) {
                                 if (phone.getType().equals("work")) {

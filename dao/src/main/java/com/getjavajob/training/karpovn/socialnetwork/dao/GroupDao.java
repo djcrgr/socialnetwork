@@ -19,7 +19,6 @@ import java.util.Base64;
 import java.util.List;
 
 @Repository
-@ContextConfiguration(locations = {"classpath:applicationContextDao.xml"})
 public class GroupDao {
 
     private static final String SELECT_ALL = "SELECT * FROM mgroup";

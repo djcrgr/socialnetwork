@@ -1,3 +1,5 @@
+package com.getjavajob.djcrgr.socialnetwork;
+
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 import org.springframework.web.context.WebApplicationContext;
@@ -12,12 +14,14 @@ public class LoginServlet extends HttpServlet {
 
     private AccountService accountService;
 
+/*
     @Override
     public void init() {
         WebApplicationContext applicationContext =
                 WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         this.accountService = applicationContext.getBean(AccountService.class);
     }
+*/
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
