@@ -1,5 +1,6 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -9,13 +10,21 @@ import java.util.List;
 @Repository
 public class Account {
 
+    @JsonProperty("id")
     private int id;
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("surname")
     private String surname;
+    @JsonProperty("age")
     private int age;
+    @JsonProperty("address")
     private String address;
+    @JsonProperty("phoneNum")
     private List<Phone> phoneNum = null;
+    @JsonProperty("password")
     private String password;
+    @JsonProperty("email")
     private String email;
 
     public Account() {

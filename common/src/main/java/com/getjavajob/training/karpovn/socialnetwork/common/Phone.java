@@ -1,11 +1,14 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Phone {
 
+    @JsonProperty("number")
     private String number;
+    @JsonProperty("type")
     private String type;
 
     public Phone(String number, String type) {

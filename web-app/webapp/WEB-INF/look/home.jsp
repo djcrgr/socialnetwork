@@ -39,10 +39,10 @@
                 <div class="btn-group-vertical" >
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
                     <span class="border border-5" ><a class="nav-link active" id="v-pills-home-tab" data-toggle="pill"
-                                                      href="profile?id=${globalId}" role="tab" aria-controls="v-pills-home"
+                                                      href="profile?id=${requestScope.account.id}" role="tab" aria-controls="v-pills-home"
                                                       aria-selected="true" >Home</a ></span >
                         <span class="border border-5" ><a class="nav-link" id="v-pills-profile-tab" data-toggle="pill"
-                                                          href="readAcc?idAcc=${sessionScope.globalId}" role="tab" aria-controls="v-pills-profile"
+                                                          href="profileEdit?id=${requestScope.account.id}" role="tab" aria-controls="v-pills-profile"
                                                           aria-selected="false" >Profile Edit</a ></span>
                         <span class="border border-5" ><a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"
                                                           aria-controls="v-pills-messages" aria-selected="false" >Messages</a ></span>

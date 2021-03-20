@@ -9,53 +9,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
             crossorigin="anonymous" ></script >
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/js/validationTel.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/js/myScript.js"></script>
-</head >
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/js/validationTel.js" ></script >
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/js/myScript.js" ></script >
 <body >
-<div id="content" >
-    <div id="header" >
-        <form action="search">
-            <label for="search">Search:</label>
-            <input type="text" id="search" name="name">
-        </form>
-    </div >
-    <div id="sidebar" >
-        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="profile?id=${globalId}" role="tab"
-               aria-controls="v-pills-home" aria-selected="true">Home</a>
-            <a class="nav-link" id="v-pills-register-tab" data-toggle="pill" href="registerJsp" role="tab"
-               aria-controls="v-pills-settings" aria-selected="false">Register New Acc</a>
-        </div>
-    </div >
-    <div id="container" >
-        <li style="content: normal" >
-            ${message}
-        </li >
-        <ul class="pagination" >
-            <%--<c:if test="${currentPage != 1}">
-                <li class="page-item"><a class="page-link"
-                                         href="search?currentPage=${currentPage-1}">Previous
-                </a>
-                </li>
-            </c:if>--%>
+<div class="container" >
+    <div class="d-flex p-3 bd-highlight" >
+        <div class="col" >
 
-            <c:forEach begin="1" end="${requestScope.numberOfPages}" var="i" >
-                <c:choose >
-                    <c:when test="${currentPage eq i}" >
-                        <li class="page-item active" ><a class="page-link" >
-                                ${i} <span class="sr-only" >(current)</span ></a >
-                        </li >
-                    </c:when >
-                    <c:otherwise >
-                        <li class="page-item" ><a class="page-link"
-                                                  href="search?name=${requestScope.name}&currentPage=${i}" >${i}</a >
-                        </li >
-                    </c:otherwise >
-                </c:choose >
-            </c:forEach >
-        </ul >
+        </div >
+        <div >
+            <form action="search" class="col" >
+                <input class="form-control" type="text" id="search" name="name" placeholder="Type to search..." >
+            </form >
+        </div >
+        <div class="col" >
+
+        </div >
     </div >
-    <div id="footer" >&copy; djcrgr@gmail.com</div >
+    <div class="row" >
+        <div class="col-2" >
+            <div class="row" >
+                <div class="btn-group-vertical" >
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
+                    <span class="border border-5" ><a class="nav-link" id="v-pills-home-tab" data-toggle="pill"
+                                                      href="profile?id=${globalId}" role="tab"
+                                                      aria-controls="v-pills-home"
+                                                      aria-selected="true" >Home</a ></span >
+                        <span class="border border-5" ><a class="nav-link" id="v-pills-messages-tab" data-toggle="pill"
+                                                          href="registerJsp" role="tab"
+                                                          aria-controls="v-pills-messages" aria-selected="false" >Register new Account</a ></span >
+                    </div >
+                </div >
+            </div >
+        </div >
+        <div class="col-10" >
+            <div class="shadow-lg p-3 mb-5 bg-body rounded" ><h4 class="display-3" >${requestScope.message} </h4 ></div >
+            <div class="shadow-lg p-3 mb-5 bg-body rounded" ><h4 class="display-3" >${requestScope.string} </h4 ></div >
+        </div >
+    </div >
 </div >
 </body >

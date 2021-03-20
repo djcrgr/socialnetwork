@@ -56,7 +56,7 @@
         </div>
         <div class="col-10" >
             <div class="shadow-lg p-3 mb-5 bg-body rounded"><h4 class="display-3">Editing info </h4></div>
-            <form action="updateAcc" >
+            <form action="updateAcc" method="post">
                 <div class="col-xs-10">
                     <input class="form-control" type="hidden" value="${requestScope.idAcc}" id="idAccount" name="idAccount" readonly>
                 </div>

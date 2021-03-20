@@ -20,7 +20,6 @@ public class CookieFilter implements Filter {
 
 
     private FilterConfig filterConfig;
-    private AccountService accountService;
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -35,7 +34,7 @@ public class CookieFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         WebApplicationContext applicationContext =
                 WebApplicationContextUtils.getWebApplicationContext(getFilterConfig().getServletContext());
-        this.accountService = applicationContext.getBean(AccountService.class);
+        AccountService accountService = applicationContext.getBean(AccountService.class);
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Cookie[] cookies = request.getCookies();
         String email = null;
