@@ -56,7 +56,7 @@
         </div>
         <div class="col-10" >
             <div class="shadow-lg p-3 mb-5 bg-body rounded"><h4 class="display-3">Editing info </h4></div>
-            <form action="updateAcc" method="post">
+            <form  id = "form">
                 <div class="col-xs-10">
                     <input class="form-control" type="hidden" value="${requestScope.idAcc}" id="idAccount" name="idAccount" readonly>
                 </div>
@@ -109,9 +109,17 @@
                             <input class="form-control" type="password" value="${requestScope.currentAcc.password}" id="password" name="password" required>
                         </div>
                     </div>
-                    <input class="btn btn-primary" type="submit" value="Submit" onclick="sendToServer()">
+                    <input class="btn btn-primary xxx" type="button" value="Submit">
                 </div>
             </form>
+            <script >
+                let form = document.querySelector('#form')
+                let button = document.querySelector('.xxx')
+                button.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    sendToServer();
+                })
+            </script>
             <div class="shadow-lg p-3 mb-5 bg-body rounded" >
                 <form action="picUpload" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="newAccId" value="${requestScope.currentAcc.id}" readonly>

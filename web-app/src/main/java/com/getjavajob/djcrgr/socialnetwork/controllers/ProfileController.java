@@ -1,5 +1,6 @@
 package com.getjavajob.djcrgr.socialnetwork.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
@@ -90,10 +91,9 @@ public class ProfileController {
 	}
 
 	@PostMapping("/updateAcc")
-	public ModelAndView updateAcc(@RequestBody String json) throws SQLException,
+	public void updateAcc(@RequestBody String json) throws SQLException,
 			IOException {
 				System.out.println(json);
-		return profileEdit(18);
 	}
 
 	@GetMapping("/profileEdit")
