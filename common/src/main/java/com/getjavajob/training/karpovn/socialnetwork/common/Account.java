@@ -1,12 +1,14 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Data
 @Repository
 public class Account {
 
@@ -21,7 +23,7 @@ public class Account {
     @JsonProperty("address")
     private String address;
     @JsonProperty("phoneNum")
-    private List<Phone> phoneNum = null;
+    private List<Phone> phoneNum;
     @JsonProperty("password")
     private String password;
     @JsonProperty("email")
@@ -66,83 +68,4 @@ public class Account {
         this.email = email;
     }
 
-
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public List<Phone> getPhoneNum() {
-        return phoneNum;
-    }
-
-    public void setPhoneNum(List<Phone> phoneNum) {
-        this.phoneNum = phoneNum;
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", age=" + age +
-                ", address='" + address + '\'' +
-                ", phoneNum=" + phoneNum +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }

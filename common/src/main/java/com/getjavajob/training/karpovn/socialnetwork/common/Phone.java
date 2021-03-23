@@ -1,8 +1,12 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@Data
+@NoArgsConstructor
 @Component
 public class Phone {
 
@@ -16,30 +20,4 @@ public class Phone {
         this.type = type;
     }
 
-    public Phone() {
-    }
-
-    @Override
-    public String toString() {
-        return "Phone{" +
-                "number='" + number + '\'' +
-                ", type='" + type + '\'' +
-                '}';
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

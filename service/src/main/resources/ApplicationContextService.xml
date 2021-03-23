@@ -14,5 +14,7 @@
         <constructor-arg ref="phoneDao"/>
     </bean>
 
-
+    <bean id="groupService" class="com.getjavajob.training.karpovn.socialnetwork.service.GroupService">
+        <constructor-arg ref="groupDao"/>
+    </bean>
 </beans>

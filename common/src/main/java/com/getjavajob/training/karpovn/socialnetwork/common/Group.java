@@ -1,75 +1,33 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.util.List;
 
+@Data
 @Component
 public class Group {
 
+    @JsonProperty("id")
     private int id;
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("description")
     private String description;
+    @JsonProperty("owner")
     private Account owner;
+    @JsonProperty("creationDate")
     private Date creationDate;
-
-    public Group() {
-    }
 
     public Group(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", owner=" + owner +
-                ", creationDate=" + creationDate +
-                '}';
-    }
+    public Group() {
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Account getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Account owner) {
-        this.owner = owner;
     }
 }

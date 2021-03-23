@@ -2,28 +2,18 @@ package com.getjavajob.djcrgr.socialnetwork.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
-import org.apache.commons.io.IOUtils;
-import org.h2.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.jws.WebParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 public class ProfileController {
@@ -66,7 +56,7 @@ public class ProfileController {
 
 	@PostMapping("/login")
 	public ModelAndView login(@RequestParam String email, @RequestParam String password, HttpServletRequest request,
-	 HttpServletResponse response) throws SQLException,
+	                          HttpServletResponse response) throws SQLException,
 			IOException {
 		Account account = accountService.checkExisting(email, password);
 		if (account != null) {
@@ -80,8 +70,8 @@ public class ProfileController {
 				cookieMail.setMaxAge(-1);
 				cookiePass.setMaxAge(-1);
 			}
-			cookieMail.setMaxAge(60*60);
-			cookiePass.setMaxAge(60*60);
+			cookieMail.setMaxAge(60 * 60);
+			cookiePass.setMaxAge(60 * 60);
 			response.addCookie(cookieMail);
 			response.addCookie(cookiePass);
 			return modelAndView;
@@ -91,13 +81,16 @@ public class ProfileController {
 	}
 
 	@PostMapping("/updateAcc")
-	public void updateAcc(@RequestBody String json) throws SQLException,
+	public ModelAndView updateAcc(@RequestBody String json) throws SQLException,
 			IOException {
-				System.out.println(json);
+		ObjectMapper objectMapper = new ObjectMapper();
+		Account account = objectMapper.readValue(json, Account.class);
+		accountService.update(account);
+		return profileEdit(account.getId());
 	}
 
 	@GetMapping("/profileEdit")
-	public ModelAndView profileEdit(@RequestParam (required = false) Integer id) throws IOException, SQLException {
+	public ModelAndView profileEdit(@RequestParam(required = false) Integer id) throws IOException, SQLException {
 		if (id == null) {
 			return new ModelAndView("redirect: login");
 		}
@@ -110,7 +103,7 @@ public class ProfileController {
 		modelAndView.addObject("image", image);
 		modelAndView.addObject("currentAcc", account);
 		modelAndView.addObject("idAcc", account.getId());
-		if (account.getPhoneNum() != null) {
+		if (!account.getPhoneNum().isEmpty()) {
 			modelAndView.addObject("homePhone", account.getPhoneNum().get(0).getNumber());
 			modelAndView.addObject("workPhone", account.getPhoneNum().get(1).getNumber());
 		}

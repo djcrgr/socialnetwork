@@ -34,7 +34,7 @@ public class PhoneDao {
 	}
 
 	public void createAccPhones(Account account) {
-		if (account.getPhoneNum() != null) {
+		if (!account.getPhoneNum().isEmpty()) {
 			for (Phone phone : account.getPhoneNum()) {
 				this.jdbcTemplate.update(CREATE_PHONE, account.getId(), phone.getNumber(), phone.getType());
 			}
@@ -59,7 +59,7 @@ public class PhoneDao {
 	}
 
 	public void updateAccPhones(Account account) {
-		if (account.getPhoneNum() != null) {
+		if (!account.getPhoneNum().isEmpty()) {
 			for (Phone phone : account.getPhoneNum()) {
 				if (phone.getType().equals("home")) {
 					this.jdbcTemplate.update(UPDATE_PHONES_FOR_HOME, phone.getNumber(), account.getId());

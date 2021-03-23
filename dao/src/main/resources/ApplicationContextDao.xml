@@ -18,6 +18,11 @@
         <constructor-arg ref="jdbcTemplate"/>
     </bean>
 
+    <bean id="groupDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.GroupDao">
+        <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
+
     <bean id="phoneDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao">
         <constructor-arg ref="dataSource"/>
         <constructor-arg ref="jdbcTemplate"/>
