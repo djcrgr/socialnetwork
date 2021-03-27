@@ -1,4 +1,4 @@
-package com.getjavajob.djcrgr.socialnetwork;
+package com.getjavajob.djcrgr.socialnetwork.oldServlets;
 
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 import org.springframework.web.context.WebApplicationContext;

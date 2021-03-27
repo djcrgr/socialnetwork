@@ -82,13 +82,15 @@
                     <div class="form-group row">
                         <label for="phoneNumHome" class="col-xs-2 col-form-label">phone (Home)</label>
                         <div class="col-xs-10">
-                            <input class="form-control" type="tel" value="${requestScope.homePhone}" id="phoneNumHome" name="phoneNumHome" onchange="validateTelHome(this.value)" required>
+                            <input class="form-control" type="telH" value="${requestScope.homePhone}" id="phoneNumHome" name="phoneNumHome" onchange="validateTelHome(this.value)" required>
+                            <button class="buttonC" id="clearButtonH">Clear</button>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="phoneNumWork" class="col-xs-2 col-form-label">phone (Work)</label>
                         <div class="col-xs-10">
-                            <input class="form-control" type="tel" value="${requestScope.workPhone}" id="phoneNumWork" name="phoneNumWork" onchange="validateTelWork(this.value)" required>
+                            <input class="form-control" type="telW" value="${requestScope.workPhone}" id="phoneNumWork" name="phoneNumWork" onchange="validateTelWork(this.value)" required>
+                            <button class="buttonC" id="clearButtonW">Clear</button>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -118,6 +120,18 @@
                 button.addEventListener('click', (ev) => {
                     ev.preventDefault();
                     sendToServer();
+                })
+                let buttonClearH = document.querySelector('#clearButtonH')
+                buttonClearH.addEventListener('click', function(e){
+                    e.preventDefault();
+                    let inputHome = document.querySelector('#phoneNumHome')
+                    inputHome.setAttribute('value', '')
+                })
+                let buttonClearW = document.querySelector('#clearButtonW')
+                buttonClearW.addEventListener('click', function(e){
+                    e.preventDefault();
+                    let inputHome = document.querySelector('#phoneNumWork')
+                    inputHome.setAttribute('value', '')
                 })
             </script>
             <div class="shadow-lg p-3 mb-5 bg-body rounded" >

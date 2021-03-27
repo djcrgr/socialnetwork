@@ -1,4 +1,4 @@
-package com.getjavajob.djcrgr.socialnetwork;
+package com.getjavajob.djcrgr.socialnetwork.oldServlets;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;

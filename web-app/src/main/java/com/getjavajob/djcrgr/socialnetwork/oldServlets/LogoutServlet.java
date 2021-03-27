@@ -1,4 +1,4 @@
-package com.getjavajob.djcrgr.socialnetwork;
+package com.getjavajob.djcrgr.socialnetwork.oldServlets;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
