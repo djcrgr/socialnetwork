@@ -51,6 +51,7 @@
         <div class="col-10" >
             <div class="shadow-lg p-3 mb-5 bg-body rounded">
                 <table class="table table-striped table-bordered table-sm" >
+                    <tbody>users</tbody>
                     <c:forEach items="${requestScope.resultList}" var="account" >
                         <tr >
                             <td ><a href="profile?id=${account.id}" >${account.name}</a ></td >
@@ -76,6 +77,7 @@
                 </ul >
                 <br>
                 <table class="table table-striped table-bordered table-sm" >
+                    <tbody>groups</tbody>
                     <c:forEach items="${requestScope.resultListGroups}" var="group" >
                         <tr >
                             <td ><a href="groupProfile?groupId=${group.id}" >${group.name}</a ></td >
