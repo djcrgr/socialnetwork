@@ -6,14 +6,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Repository
+@Entity
+@Table(name = "account")
 public class Account {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("id")
     private int id;
+    @Column(name = "name")
     @JsonProperty("name")
     private String name;
     @JsonProperty("surname")
