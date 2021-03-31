@@ -19,7 +19,6 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("id")
     private int id;
-    @Column(name = "name")
     @JsonProperty("name")
     private String name;
     @JsonProperty("surname")
@@ -29,6 +28,7 @@ public class Account {
     @JsonProperty("address")
     private String address;
     @JsonProperty("phoneNum")
+    @Transient
     private List<Phone> phoneNum;
     @JsonProperty("password")
     private String password;
