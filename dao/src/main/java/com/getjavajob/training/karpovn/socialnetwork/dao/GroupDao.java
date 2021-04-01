@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.persistence.EntityManagerFactory;
 import javax.print.attribute.standard.DateTimeAtCreation;
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;

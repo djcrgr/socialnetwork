@@ -7,6 +7,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,6 +45,8 @@ public class AccountDao {
 
 	private final DataSource dataSource;
 	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private EntityManagerFactory emf;
 
 	public AccountDao(DataSource dataSource) {
 		this.dataSource = dataSource;
@@ -100,8 +104,11 @@ public class AccountDao {
 	}
 
 	public void createAccount(Account account) {
-		this.jdbcTemplate.update(CREATE_ACCOUNT, account.getId(), account.getName(), account.getSurname(),
-				account.getAge(), account.getAddress(), account.getEmail(), account.getPassword());
+		EntityManager em = emf.createEntityManager();
+		em.persist(account);
+		em.flush();
+		/*this.jdbcTemplate.update(CREATE_ACCOUNT, account.getId(), account.getName(), account.getSurname(),
+				account.getAge(), account.getAddress(), account.getEmail(), account.getPassword());*/
 	}
 
 	public void updateAccount(Account account) {

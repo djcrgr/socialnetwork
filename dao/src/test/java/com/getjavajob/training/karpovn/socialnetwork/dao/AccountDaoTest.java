@@ -1,6 +1,7 @@
 /*
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
+import org.springframework.test.context.ContextConfiguration;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
@@ -23,9 +23,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
-*/
-/*@ContextConfiguration(locations = {"classpath:applicationContextDaoOver.xml"})*//*
-
+@ContextConfiguration(locations = {"classpath:applicationContextDaoOver.xml"})
 public class AccountDaoTest {
 
     private Connection connection;
@@ -35,7 +33,8 @@ public class AccountDaoTest {
     private DataSource dataSource;
     private InputStream inputStream;
 
-    @Before
+   */
+/* @Before
     public void setUp() throws Exception {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
@@ -49,9 +48,11 @@ public class AccountDaoTest {
         statement.execute(fill);
         statement.execute(createFriendsInDb);
         this.connection.close();
-    }
+    }*//*
 
-    @After
+
+    */
+/*@After
     public void tearDown() throws Exception {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("Db.properties"));
@@ -62,11 +63,23 @@ public class AccountDaoTest {
         statement.execute(clean);
         statement.execute(cleanFriendsTable);
         this.connection.close();
-    }
+    }*//*
+
 
     @Test
     public void getIdForNew() throws SQLException {
         assertEquals(2, accountDao.getIdForNew());
+    }
+
+    @Test
+    public void testCreateNewAcc() {
+    	Account account = new Account();
+    	account.setId(101);
+    	account.setName("name");
+    	account.setSurname("surname");
+    	account.setEmail("mail@mail.ru");
+    	account.setPassword("123");
+    	accountDao.createAccount(account);
     }
 
     @Test
@@ -145,4 +158,5 @@ public class AccountDaoTest {
     public void showAllAccounts() throws SQLException {
         assertEquals(accountDao.readAccountById(1).getName(), accountDao.showAllAccounts().get(0).getName());
     }
-}*/
+}
+*/
