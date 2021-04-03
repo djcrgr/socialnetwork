@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
+@Transactional
 public class AccountService extends AbstractService<Account> {
 
 	private final AccountDao accountDao;

@@ -1,6 +1,9 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -9,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -107,13 +112,13 @@ public class AccountDao {
 		EntityManager em = emf.createEntityManager();
 		em.persist(account);
 		em.flush();
-		/*this.jdbcTemplate.update(CREATE_ACCOUNT, account.getId(), account.getName(), account.getSurname(),
-				account.getAge(), account.getAddress(), account.getEmail(), account.getPassword());*/
 	}
 
 	public void updateAccount(Account account) {
+		EntityManager em = emf.createEntityManager();
+		em.merge(account);/*
 		this.jdbcTemplate.update(UPDATE_ACCOUNT, account.getName(), account.getSurname(), account.getAge(),
-				account.getAddress(), account.getEmail(), account.getPassword(), account.getId());
+				account.getAddress(), account.getEmail(), account.getPassword(), account.getId());*/
 	}
 
 	public void deleteById(int id) {
@@ -121,8 +126,15 @@ public class AccountDao {
 	}
 
 	public Account readAccountById(int id) {
-		return this.jdbcTemplate.queryForObject(SELECT_BY_ID, new Object[]{id},
-				(resultSet, i) -> createAccountFromResult(resultSet));
+		EntityManager entityManager = emf.createEntityManager();
+		try {
+			String qlString = "SELECT a FROM Account a WHERE a.id = ?1";
+			TypedQuery<Account> query = entityManager.createQuery(qlString, Account.class);
+			query.setParameter(1, id);
+			return query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	public List<Account> showAccWithOffset(int limit, int offset, String subStringName, String subStringSurname) {
