@@ -3,6 +3,9 @@
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Account</class>
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Phone</class>
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Group</class>
+        <properties>
+            <property name="dialect" value="org.hibernate.dialect.H2Dialect"/>
+        </properties>
     </persistence-unit>
 
 </persistence>

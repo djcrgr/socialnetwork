@@ -1,40 +1,51 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Repository
 @Entity
 @Table(name = "account")
 public class Account {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("id")
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @JsonProperty("name")
     private String name;
+
     @JsonProperty("surname")
     private String surname;
+
     @JsonProperty("age")
     private int age;
+
     @JsonProperty("address")
     private String address;
+
     @JsonProperty("phoneNum")
-    @Transient
+    @OneToMany
+    @JoinColumn(name = "userId")
     private List<Phone> phoneNum;
+
     @JsonProperty("password")
     private String password;
+
     @JsonProperty("email")
     private String email;
 
-    public Account() {
-    }
+    private byte[] photo;
 
     public Account(int id, String name, String surname, int age) {
         this.id = id;

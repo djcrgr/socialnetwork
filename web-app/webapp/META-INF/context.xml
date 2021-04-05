@@ -6,6 +6,6 @@
     <Resource name="jdbc/webapp" auth="Container"
               type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
               url="jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_34f0532abb90acb?reconnect=true:3306/"
-              username="bd1823065c1f06" password="af490815" maxTotal="7" maxIdle="3"
-              maxWaitMillis="10000" rollbackOnReturn="true" commitOnReturn="true" defaultAutoCommit="false"/>
+              username="bd1823065c1f06" password="af490815" maxTotal="9" maxActive="6"
+              maxWaitMillis="800" rollbackOnReturn="true" commitOnReturn="true" defaultAutoCommit="false"/>
 </Context>

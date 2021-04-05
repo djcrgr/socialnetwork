@@ -8,6 +8,10 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,6 +30,8 @@ public class PhoneDao {
 
 	private final JdbcTemplate jdbcTemplate;
 	private final DataSource dataSource;
+	@Autowired
+	private EntityManagerFactory emf;
 
 	@Autowired
 	public PhoneDao(DataSource dataSource, JdbcTemplate jdbcTemplate) throws SQLException {
@@ -42,13 +48,17 @@ public class PhoneDao {
 	}
 
 	public List<Phone> readAccPhones(int id) {
-		List<Phone> phoneList = new ArrayList<>();
+		/*List<Phone> phoneList = new ArrayList<>();
 		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(SELECT_ALL_BY_ID, new Object[]{id},
 				new int[] {Types.INTEGER});
 		while (rowSet.next()) {
 			phoneList.add(setPhone(rowSet));
 		}
-		return phoneList;
+		return phoneList;*/
+		List<Phone> list = new ArrayList<>();
+		list.add(new Phone("1", "home"));
+		list.add(new Phone("1", "work"));
+		return list;
 	}
 
 	private Phone setPhone(SqlRowSet rowSet) {

@@ -47,7 +47,7 @@ public class GroupDao {
     public GroupDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.dataSource = dataSource;
         this.jdbcTemplate = jdbcTemplate;
-        this.accountDao = new AccountDao(dataSource, jdbcTemplate);
+        this.accountDao = new AccountDao();
     }
 
     public void createGroup(Group group) {
@@ -113,7 +113,7 @@ public class GroupDao {
 
     private Group createGroupFromResult(ResultSet resultSet) throws SQLException{
         Group group = new Group();
-        AccountDao accountDao = new AccountDao(dataSource, jdbcTemplate);
+        AccountDao accountDao = new AccountDao();
         group.setId(resultSet.getInt("id"));
         group.setName(resultSet.getString("name"));
         group.setDescription(resultSet.getString("description"));
@@ -124,7 +124,7 @@ public class GroupDao {
 
     private Group createGroupFromRowSet(SqlRowSet rowSet) {
         Group group = new Group();
-        AccountDao accountDao = new AccountDao(dataSource, jdbcTemplate);
+        AccountDao accountDao = new AccountDao();
         group.setId(rowSet.getInt("id"));
         group.setName(rowSet.getString("name"));
         group.setDescription(rowSet.getString("description"));

@@ -3,6 +3,7 @@ package com.getjavajob.training.karpovn.socialnetwork.service;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
 import com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-@Transactional
 public class AccountService extends AbstractService<Account> {
 
 	private final AccountDao accountDao;

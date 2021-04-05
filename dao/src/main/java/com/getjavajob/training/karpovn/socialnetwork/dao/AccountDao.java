@@ -1,29 +1,18 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Repository;
 
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import javax.sql.DataSource;
-import java.io.ByteArrayOutputStream;
+import javax.persistence.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
-@Component
+@Repository
 public class AccountDao {
 
 	private static final String SELECT_ALL = "select * from account";
@@ -47,86 +36,37 @@ public class AccountDao {
 	private static final String QUERY_EMAIL_PASS = "SELECT id FROM account WHERE email = ? and password = ?";
 	private static final String QUERY_FOR_COUNT = "select count(*) as result from account";
 
-
-	private final DataSource dataSource;
-	private JdbcTemplate jdbcTemplate;
-	@Autowired
-	private EntityManagerFactory emf;
-
-	public AccountDao(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-	@Autowired
-	public AccountDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	public DataSource getDatasource() {
-		return dataSource;
-	}
-
-	public int getIdForNew() {
-		return this.jdbcTemplate.queryForObject(QUERY_FOR_COUNT, Integer.class) + 1;
-	}
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	public String getImageFromDb(int accountId) {
-		Blob result;
-		result = this.jdbcTemplate.queryForObject(GET_PHOTO, Blob.class, accountId);
-		if (result == null) {
-			return getImageFromDb(22);
-		} else {
-			return getString(result);
-		}
-	}
-
-	private String getString(Blob blob) {
-		InputStream inputStream = null;
-		try {
-			inputStream = blob.getBinaryStream();
-		} catch (SQLException throwables) {
-			throwables.printStackTrace();
-		}
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		byte[] buffer = new byte[4096];
-		int bytesRead = -1;
-		while (true) {
-			try {
-				if (!((bytesRead = inputStream.read(buffer)) != -1)) break;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			outputStream.write(buffer, 0, bytesRead);
-		}
-		byte[] imageBytes = outputStream.toByteArray();
-		return Base64.getEncoder().encodeToString(imageBytes);
+		Query query = entityManager.createQuery("Select acc.photo FROM Account acc where acc.id = ?1 ");
+		query.setParameter(1, accountId);
+		return query.getSingleResult().toString();
 	}
 
 	public Account checkForLogin(String email, String password) {
-		return this.jdbcTemplate.queryForObject(QUERY_EMAIL_PASS, new Object[]{email, password},
-				(resultSet, i) -> AccountDao.this.readAccountById(resultSet.getInt("id")));
+		String qlString = "Select acc FROM Account acc where acc.email = ?1 and acc" +
+				".password = ?2";
+		TypedQuery<Account> query = entityManager.createQuery(qlString, Account.class);
+		query.setParameter(1, email);
+		query.setParameter(2, password);
+		return query.getSingleResult();
 	}
 
 	public void createAccount(Account account) {
-		EntityManager em = emf.createEntityManager();
-		em.persist(account);
-		em.flush();
+		entityManager.persist(account);
 	}
 
 	public void updateAccount(Account account) {
-		EntityManager em = emf.createEntityManager();
-		em.merge(account);/*
-		this.jdbcTemplate.update(UPDATE_ACCOUNT, account.getName(), account.getSurname(), account.getAge(),
-				account.getAddress(), account.getEmail(), account.getPassword(), account.getId());*/
+		entityManager.merge(account);
 	}
 
 	public void deleteById(int id) {
-		this.jdbcTemplate.update(DELETE_BY_ID, id);
+		entityManager.remove(entityManager.find(Account.class, id));
 	}
 
 	public Account readAccountById(int id) {
-		EntityManager entityManager = emf.createEntityManager();
 		try {
 			String qlString = "SELECT a FROM Account a WHERE a.id = ?1";
 			TypedQuery<Account> query = entityManager.createQuery(qlString, Account.class);
@@ -139,80 +79,30 @@ public class AccountDao {
 
 	public List<Account> showAccWithOffset(int limit, int offset, String subStringName, String subStringSurname) {
 		List<Account> accountList = new ArrayList<>();
+		/*String qlStringOne = "select * from account where name like CONCAT( '%' ,?1, '%') limit ?2 offset ?3";
+		TypedQuery<Account> query = em.createQuery(qlStringOne, Account.class);
+		query.setParameter()
 		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(QUERY_FOR__OFFSET, new Object[]{subStringName,
 				subStringSurname,
 				limit,
 				offset}, new int[]{Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.INTEGER});
 		while (rowSet.next()) {
 			accountList.add(createAccountFromResultRowSet(rowSet));
-		}
+		}*/
 		return accountList;
 	}
 
-	public void loadPicture(int accountId, InputStream inputStream) throws SQLException {
-		this.jdbcTemplate.update(UPDATE_ACC_PHOTO, inputStream, accountId);
+	public void loadPicture(int accountId, InputStream inputStream) throws SQLException, IOException {
+		Account account = readAccountById(accountId);
+		if (inputStream != null) {
+			account.setPhoto(IOUtils.toByteArray(inputStream));
+			entityManager.merge(account);
+		}
 	}
 
 	public List<Account> showAllAccounts() throws SQLException {
-		return this.jdbcTemplate.query(SELECT_ALL_BY_ID, (resultSet, i) -> readAccountById(resultSet.getInt("id")));
+		String qlString = "SELECT a FROM Account a";
+		TypedQuery<Account> query = entityManager.createQuery(qlString, Account.class);
+		return query.getResultList();
 	}
-
-
-	private Account createAccountFromResultRowSet(SqlRowSet rowSet) {
-		Account account = new Account();
-		account.setId(rowSet.getInt("id"));
-		account.setName(rowSet.getString("name"));
-		account.setSurname(rowSet.getString("surname"));
-		account.setAge(rowSet.getInt("age"));
-		account.setAddress(rowSet.getString("address"));
-		account.setEmail(rowSet.getString("email"));
-		account.setPassword(rowSet.getString("password"));
-		return account;
-	}
-
-	private Account createAccountFromResult(ResultSet resultSet) throws SQLException {
-		Account account = new Account();
-		account.setId(resultSet.getInt("id"));
-		account.setName(resultSet.getString("name"));
-		account.setSurname(resultSet.getString("surname"));
-		account.setAge(resultSet.getInt("age"));
-		account.setAddress(resultSet.getString("address"));
-		account.setEmail(resultSet.getString("email"));
-		account.setPassword(resultSet.getString("password"));
-		return account;
-	}
-
-    /*public void addFriend(Account account, Account friend) {
-        prepStat(friend, account, ADD_FRIEND);
-    }
-
-    public void removeFriend(Account account, Account friend) {
-        prepStat(account, friend, REMOVE_FRIEND);
-    }
-
-    private void prepStat(Account account, Account friend, String removeFriend) {
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(removeFriend)) {
-            preparedStatement.setInt(1, friend.getId());
-            preparedStatement.setInt(2, account.getId());
-            preparedStatement.execute();
-//            connectionPool.free(connection);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }*/
-	/*public List<Account> showFriend(Account account) {
-		List<Account> friendList = new ArrayList<>();
-		try (Connection connection = dataSource.getConnection();
-		     PreparedStatement preparedStatement = connection.prepareStatement(SHOW_FRIENDS)) {
-			preparedStatement.setInt(1, account.getId());
-			try (ResultSet resultSet = preparedStatement.executeQuery();) {
-				while (resultSet.next()) {
-					friendList.add(readAccountById(resultSet.getInt("friendid")));
-				}
-			}
-		} catch (SQLException throwables) {
-			throwables.printStackTrace();
-		}
-		return friendList;
-	}*/
 }

@@ -1,28 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd                ">
 
     <context:property-placeholder location="classpath:data.properties"/>
+    <context:component-scan base-package="com.getjavajob.training.karpovn.socialnetwork.common" />
+    <context:component-scan base-package="com.getjavajob.training.karpovn.socialnetwork.dao" />
 
 
     <bean id = "dataSource"
-          class = "org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name = "driverClassName" value = "com.mysql.jdbc.Driver"/>
+          class = "org.apache.commons.dbcp2.BasicDataSource">
+        <property name="url" value="${database.url}"/>
+        <property name="username" value="${database.username}"/>
+        <property name="password" value="${database.password}"/>
+        <!--<property name = "driverClassName" value = "com.mysql.jdbc.Driver"/>
         <property name = "url" value = "jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_34f0532abb90acb?reconnect=true:3306/heroku_34f0532abb90acb"/>
         <property name = "username" value = "bd1823065c1f06"/>
-        <property name = "password" value = "af490815"/>
+        <property name = "password" value = "af490815"/>-->
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceXmlLocation" value="classpath:persistence.xml" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="com.getjavajob.training.karpovn.socialnetwork.common" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true" />
+                <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory"  ref="entityManagerFactory"/>
     </bean>
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <constructor-arg ref="dataSource"/>
     </bean>
 
-    <bean id="accountDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="jdbcTemplate"/>
-    </bean>
+    <tx:annotation-driven/>
 </beans>
