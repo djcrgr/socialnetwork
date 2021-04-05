@@ -1,0 +1,1 @@
+insert into account (id, name, surname, age, email, password) values (1, 'ivan', 'ivanov', 10, 'list@list.ru', '123')

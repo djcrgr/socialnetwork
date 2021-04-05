@@ -73,6 +73,7 @@ public class AccountDaoTest {
 
 
     @Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "classpath:fillTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "classpath:dropTables.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Transactional
     @Test
@@ -80,7 +81,7 @@ public class AccountDaoTest {
         Account user = new Account();
         user.setName("Petr");
         accountDao.createAccount(user);
-        assertEquals("Petr", accountDao.readAccountById(1).getName());
+        assertEquals("Petr", accountDao.readAccountById(2).getName());
     }
 
     @Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -103,13 +104,7 @@ public class AccountDaoTest {
     @Test
     @Transactional
     public void updateAccount() throws SQLException {
-        Account user = new Account();
-        user.setId(2);
-        user.setName("Petr");
-        accountDao.createAccount(user);
-        assertEquals("Petr", accountDao.readAccountById(2).getName());
-        user.setName("Maks");
-        accountDao.updateAccount(user);
+
         assertEquals("Maks", accountDao.readAccountById(2).getName());
     }
 
