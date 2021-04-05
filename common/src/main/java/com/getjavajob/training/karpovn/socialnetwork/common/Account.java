@@ -35,7 +35,7 @@ public class Account {
     private String address;
 
     @JsonProperty("phoneNum")
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private List<Phone> phoneNum;
 

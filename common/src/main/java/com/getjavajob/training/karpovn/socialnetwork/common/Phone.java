@@ -22,7 +22,7 @@ public class Phone {
     @JsonProperty("type")
     @Column(name = "phoneType")
     private String type;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
     private Account account;
     @Id
