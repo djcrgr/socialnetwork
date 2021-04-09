@@ -8,10 +8,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,37 +25,27 @@ public class PhoneDao {
 	private static final String UPDATE_PHONES_FOR_WORK = "update phones set phoneNum = ? where phoneType = 'work' " +
 			"and userId = ?";
 
-	private final JdbcTemplate jdbcTemplate;
-	private final DataSource dataSource;
+	@PersistenceContext
+	private EntityManager entityManager;
 	@Autowired
-	private EntityManagerFactory emf;
+	JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	public PhoneDao(DataSource dataSource, JdbcTemplate jdbcTemplate) throws SQLException {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	public void createAccPhones(Account account) {
-		if (!account.getPhoneNum().isEmpty()) {
-			for (Phone phone : account.getPhoneNum()) {
-				this.jdbcTemplate.update(CREATE_PHONE, account.getId(), phone.getNumber(), phone.getType());
+	public void createAccPhones(List<Phone> phoneList) {
+		if (!phoneList.isEmpty()) {
+			for (Phone phone : phoneList) {
+				entityManager.persist(phone);
 			}
 		}
 	}
 
 	public List<Phone> readAccPhones(int id) {
-		/*List<Phone> phoneList = new ArrayList<>();
+		List<Phone> phoneList = new ArrayList<>();
 		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(SELECT_ALL_BY_ID, new Object[]{id},
 				new int[] {Types.INTEGER});
 		while (rowSet.next()) {
 			phoneList.add(setPhone(rowSet));
 		}
-		return phoneList;*/
-		List<Phone> list = new ArrayList<>();
-		list.add(new Phone("1", "home"));
-		list.add(new Phone("1", "work"));
-		return list;
+		return phoneList;
 	}
 
 	private Phone setPhone(SqlRowSet rowSet) {
@@ -67,7 +54,7 @@ public class PhoneDao {
 		phone.setType(rowSet.getString("phoneType"));
 		return phone;
 	}
-
+/*
 	public void updateAccPhones(Account account) {
 		if (!account.getPhoneNum().isEmpty()) {
 			for (Phone phone : account.getPhoneNum()) {
@@ -78,9 +65,9 @@ public class PhoneDao {
 				}
 			}
 		}
-	}
+	}*/
 
-	public void deleteAccPhones(Account account) {
+	/*public void deleteAccPhones(Account account) {
 		this.jdbcTemplate.update(DELETE_PHONES_BY_ID, account.getId());
-	}
+	}*/
 }

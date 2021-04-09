@@ -1,4 +1,3 @@
-/*
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
@@ -6,6 +5,12 @@ import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,9 +21,39 @@ import java.util.Properties;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:ApplicationContextDao.xml", "classpath:applicationContextDaoOver.xml"})
 public class PhoneDaoTest {
 
-    private Connection connection;
+
+	@Autowired
+	private PhoneDao phoneDao;
+	@Autowired
+	private AccountDao accountDao;
+
+	@Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+	@Sql(value = "classpath:fillTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)/*
+	@Sql(value = "classpath:dropTables.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)*/
+	@Transactional
+	@Test
+	public void testCreate() {
+		Account account = accountDao.readAccountById(11);
+		List<Phone> phoneList  = new ArrayList<>();
+		Phone phone = new Phone();
+		phone.setNumber("333");
+		phone.setType("work");
+		phone.setAccount(account);
+		phoneList.add(phone);
+		Phone phone1 = new Phone();
+		phone1.setAccount(account);
+		phone1.setType("home");
+		phone1.setNumber("444");
+		phoneList.add(phone1);
+		phoneDao.createAccPhones(phoneList);
+		assertEquals(phoneList, phoneDao.readAccPhones(2));
+	}
+
+   /* private Connection connection;
     private AccountDao accountDao;
     private PhoneDao phoneDao;
 
@@ -109,5 +144,5 @@ public class PhoneDaoTest {
         assertFalse(phoneDao.readAccPhones(1).isEmpty());
         phoneDao.deleteAccPhones(account);
         assertTrue(phoneDao.readAccPhones(1).isEmpty());
-    }
-}*/
+    }*/
+}

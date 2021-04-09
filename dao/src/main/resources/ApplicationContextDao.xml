@@ -24,8 +24,6 @@
     </bean>
 
     <bean id="phoneDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="jdbcTemplate"/>
     </bean>
 
     <bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">

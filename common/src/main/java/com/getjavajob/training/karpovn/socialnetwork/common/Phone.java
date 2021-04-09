@@ -33,4 +33,10 @@ public class Phone {
         this.number = number;
         this.type = type;
     }
+
+    public Phone(String number, String type, Account account) {
+        this.number = number;
+        this.type = type;
+        this.account = account;
+    }
 }
