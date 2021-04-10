@@ -12,10 +12,12 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,13 +33,13 @@ public class PhoneDaoTest {
 	@Autowired
 	private AccountDao accountDao;
 
-	@Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-	@Sql(value = "classpath:fillTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)/*
+	/*@Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+	@Sql(value = "classpath:fillTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)*//*
 	@Sql(value = "classpath:dropTables.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)*/
 	@Transactional
 	@Test
 	public void testCreate() {
-		Account account = accountDao.readAccountById(11);
+		Account account = accountDao.readAccountById(2);
 		List<Phone> phoneList  = new ArrayList<>();
 		Phone phone = new Phone();
 		phone.setNumber("333");
@@ -48,9 +50,9 @@ public class PhoneDaoTest {
 		phone1.setAccount(account);
 		phone1.setType("home");
 		phone1.setNumber("444");
-		phoneList.add(phone1);
-		phoneDao.createAccPhones(phoneList);
-		assertEquals(phoneList, phoneDao.readAccPhones(2));
+		phoneList.add(phone1);/*
+		phoneDao.createAccPhones(phoneList);*/
+		assertEquals(phoneList, phoneDao.readAccPhones(1));
 	}
 
    /* private Connection connection;

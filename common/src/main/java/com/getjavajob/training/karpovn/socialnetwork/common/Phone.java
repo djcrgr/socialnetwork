@@ -1,20 +1,19 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Component
 @Entity
 @Table(name = "phones")
-public class Phone {
+public class Phone implements Serializable {
 
     @JsonProperty("number")
     @Column(name = "phoneNum")
@@ -22,8 +21,8 @@ public class Phone {
     @JsonProperty("type")
     @Column(name = "phoneType")
     private String type;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId")
+    @ManyToOne
+    @JoinColumn(name = "account_id")
     private Account account;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

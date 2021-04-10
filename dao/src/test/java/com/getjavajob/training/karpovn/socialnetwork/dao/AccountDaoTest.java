@@ -84,9 +84,9 @@ public class AccountDaoTest {
         assertNull(accountDao.readAccountById(2));
     }
 
-    @Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+   /* @Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "classpath:fillTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "classpath:dropTables.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "classpath:dropTables.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)*/
     @Test
     @Transactional
     public void readAccountById() {

@@ -1,21 +1,22 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Repository
 @Entity
 @Table(name = "account")
-public class Account {
+public class Account implements Serializable {
 
     @JsonProperty("id")
     @Id
@@ -29,14 +30,15 @@ public class Account {
     private String surname;
 
     @JsonProperty("age")
-    private int age;
+    private Integer age;
 
     @JsonProperty("address")
     private String address;
 
     @JsonProperty("phoneNum")
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @OneToMany(cascade={CascadeType.ALL},fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id")
+    @ToString.Exclude
     private List<Phone> phoneNum;
 
     @JsonProperty("password")
@@ -82,5 +84,6 @@ public class Account {
         this.password = password;
         this.email = email;
     }
+
 
 }
