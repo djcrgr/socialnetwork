@@ -50,9 +50,9 @@ public class PhoneDaoTest {
 		phone1.setAccount(account);
 		phone1.setType("home");
 		phone1.setNumber("444");
-		phoneList.add(phone1);/*
-		phoneDao.createAccPhones(phoneList);*/
-		assertEquals(phoneList, phoneDao.readAccPhones(1));
+		phoneList.add(phone1);
+		phoneDao.createAccPhones(phoneList);
+		assertEquals(phoneList, phoneDao.readAccPhones(2));
 	}
 
    /* private Connection connection;

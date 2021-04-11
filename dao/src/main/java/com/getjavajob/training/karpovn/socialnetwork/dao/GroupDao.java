@@ -8,7 +8,9 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.print.attribute.standard.DateTimeAtCreation;
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
@@ -39,20 +41,12 @@ public class GroupDao {
     private static final String QUERY_FOR_OFFSET =
             "select * from mgroup where name like CONCAT( '%',?,'%') limit ? " + "offset ?";
 
-    private final DataSource dataSource;
-    private final JdbcTemplate jdbcTemplate;
-    private final AccountDao accountDao;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    @Autowired
-    public GroupDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = jdbcTemplate;
-        this.accountDao = new AccountDao();
-    }
 
     public void createGroup(Group group) {
-        this.jdbcTemplate.update(CREATE_GROUP, group.getId(), group.getName(), group.getDescription(),
-                group.getOwner().getId(), new Date(System.currentTimeMillis()));
+
     }
 
     public Group readGroupById(int id) {
