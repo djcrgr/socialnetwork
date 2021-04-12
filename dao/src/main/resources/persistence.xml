@@ -4,5 +4,4 @@
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Phone</class>
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Group</class>
     </persistence-unit>
-
 </persistence>

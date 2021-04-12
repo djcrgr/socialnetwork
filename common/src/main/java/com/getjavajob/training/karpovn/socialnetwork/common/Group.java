@@ -27,10 +27,12 @@ public class Group {
     @JsonProperty("description")
     private String description;
     @JsonProperty("owner")
-    @ManyToOne
-    private Account owner;
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
     @JsonProperty("creationDate")
     private Date creationDate;
+    private byte[] picture;
 
     public Group(int id, String name) {
         this.id = id;
