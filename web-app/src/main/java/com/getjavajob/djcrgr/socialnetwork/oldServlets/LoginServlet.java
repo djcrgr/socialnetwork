@@ -43,7 +43,6 @@ public class LoginServlet extends HttpServlet {
     }
 
     private void setAccount(HttpServletRequest request, HttpServletResponse response, String email, String password) throws IOException, ServletException {
-        try {
             Account account = accountService.checkExisting(email, password);
             if (account != null) {
                 response.sendRedirect("profile?id=" + account.getId());
@@ -52,9 +51,6 @@ public class LoginServlet extends HttpServlet {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/look/login.jsp");
                 dispatcher.forward(request, response);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
     }
 }
 

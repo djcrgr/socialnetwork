@@ -27,7 +27,7 @@ public class SearchServlet extends HttpServlet {
     private GroupService groupService;
 
 
-    @Override
+    /*@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String searchString = req.getParameter("name");
         int currentPage;
@@ -84,5 +84,5 @@ public class SearchServlet extends HttpServlet {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
+    }*/
 }

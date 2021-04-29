@@ -3,6 +3,7 @@ package com.getjavajob.djcrgr.socialnetwork.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,11 +11,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Base64;
 
 @Controller
 public class ProfileController {
@@ -58,23 +68,22 @@ public class ProfileController {
 	@PostMapping("/login")
 	public ModelAndView login(@RequestParam String email, @RequestParam String password, HttpServletRequest request,
 	                          HttpServletResponse response) throws SQLException,
-			IOException {
+			IOException, GeneralSecurityException {
 		Account account = accountService.checkExisting(email, password);
 		if (account != null) {
 			ModelAndView modelAndView = new ModelAndView("home");
 			modelAndView.addObject("account", account);
 			modelAndView.addObject("image", accountService.getImageFromDb(account.getId()));
 			String rememberCheck = request.getParameter("remember");
-			Cookie cookieMail = new Cookie("mail", email);
-			Cookie cookiePass = new Cookie("pas", password);
+			String dataMailPass = "email=" + email + "&" + "password=" + password + "^";
+			String key = "ThisIsASecretKey";
+			String token = encrypt(key, dataMailPass);
+			Cookie cookie = new Cookie("token", token);
 			if (rememberCheck == null) {
-				cookieMail.setMaxAge(-1);
-				cookiePass.setMaxAge(-1);
+				cookie.setMaxAge(-1);
 			}
-			cookieMail.setMaxAge(60 * 60);
-			cookiePass.setMaxAge(60 * 60);
-			response.addCookie(cookieMail);
-			response.addCookie(cookiePass);
+			cookie.setMaxAge(60 * 60);
+			response.addCookie(cookie);
 			return modelAndView;
 		} else {
 			return new ModelAndView("login");
@@ -92,7 +101,8 @@ public class ProfileController {
 
 	@PostMapping("/picUpload")
 	public ModelAndView pucUpload(@RequestParam("file") MultipartFile filePart,
-	                              @RequestParam("newAccId") Integer id ) throws IOException, SQLException {
+	                              @RequestParam("newAccId") Integer id  ) throws IOException,
+			SQLException {
 		if (id == null) {
 			id = 0;
 		}
@@ -111,7 +121,7 @@ public class ProfileController {
 		}
 		Account account = accountService.readById(id);
 		ModelAndView modelAndView = new ModelAndView("profileEdit");
-		String image = accountService.getImageFromDb(account.getId());
+		String image = accountService.getImageFromDb(id);
 		if (image == null) {
 			image = accountService.getImageFromDb(2);
 		}
@@ -128,5 +138,25 @@ public class ProfileController {
 	@GetMapping("/login")
 	public ModelAndView showLoginPage() {
 		return new ModelAndView("login");
+	}
+
+
+	private String encrypt(String secret, String data) {
+
+
+		byte[] decodedKey = Base64.getDecoder().decode(secret);
+
+		try {
+			Cipher cipher = Cipher.getInstance("AES");
+			// rebuild key using SecretKeySpec
+			SecretKey originalKey = new SecretKeySpec(Arrays.copyOf(decodedKey, 16), "AES");
+			cipher.init(Cipher.ENCRYPT_MODE, originalKey);
+			byte[] cipherText = cipher.doFinal(data.getBytes("UTF-8"));
+			return Base64.getEncoder().encodeToString(cipherText);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					"Error occured while encrypting data", e);
+		}
+
 	}
 }

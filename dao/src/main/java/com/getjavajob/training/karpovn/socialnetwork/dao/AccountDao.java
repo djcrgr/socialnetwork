@@ -3,13 +3,16 @@ package com.getjavajob.training.karpovn.socialnetwork.dao;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 
 import javax.persistence.*;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Repository
@@ -21,7 +24,12 @@ public class AccountDao {
 	public String getImageFromDb(int accountId) {
 		Query query = entityManager.createQuery("Select acc.photo FROM Account acc where acc.id = ?1 ");
 		query.setParameter(1, accountId);
-		return query.getSingleResult().toString();
+		Object result = query.getSingleResult();
+		if ( result == null) {
+			return null;
+		} else {
+			return DatatypeConverter.printBase64Binary((byte[]) result);
+		}
 	}
 
 	public Account checkForLogin(String email, String password) {
@@ -37,7 +45,7 @@ public class AccountDao {
 		entityManager.persist(account);
 	}
 
-	public void updateAccount(Account account) {
+	public void updateAccount(@ModelAttribute("account") Account account) {
 		entityManager.merge(account);
 	}
 

@@ -30,7 +30,7 @@ public class PicUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Part filePart = req.getPart("file");
         String id = req.getParameter("newAccId");
-        if (id.isEmpty()) {//todo read string api
+        if (id.isEmpty()) {
             id = "0";
         }
         InputStream inputStream = null;

@@ -21,7 +21,7 @@ public abstract class AbstractService<T> {
 
     abstract void removeFriend(T t, T friend);*/
 
-    abstract void loadPicture(int id, InputStream inputStream) throws SQLException;
+    abstract void loadPicture(int id, InputStream inputStream) throws SQLException, IOException;
 
     /*bstract List<T> showFriends(T t) ;*/
 

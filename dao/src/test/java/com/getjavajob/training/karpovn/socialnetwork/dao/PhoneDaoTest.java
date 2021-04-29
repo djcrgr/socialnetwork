@@ -1,3 +1,4 @@
+/*
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
@@ -33,9 +34,9 @@ public class PhoneDaoTest {
 	@Autowired
 	private AccountDao accountDao;
 
-	/*@Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-	@Sql(value = "classpath:fillTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)*//*
-	@Sql(value = "classpath:dropTables.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)*/
+	@Sql(value = "classpath:createTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+	@Sql(value = "classpath:fillTables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+	@Sql(value = "classpath:dropTables.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 	@Transactional
 	@Test
 	public void testCreate() {
@@ -55,7 +56,8 @@ public class PhoneDaoTest {
 		assertEquals(phoneList, phoneDao.readAccPhones(2));
 	}
 
-   /* private Connection connection;
+   */
+/* private Connection connection;
     private AccountDao accountDao;
     private PhoneDao phoneDao;
 
@@ -146,5 +148,7 @@ public class PhoneDaoTest {
         assertFalse(phoneDao.readAccPhones(1).isEmpty());
         phoneDao.deleteAccPhones(account);
         assertTrue(phoneDao.readAccPhones(1).isEmpty());
-    }*/
+    }*//*
+
 }
+*/

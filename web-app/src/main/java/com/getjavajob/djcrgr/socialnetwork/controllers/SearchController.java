@@ -24,7 +24,7 @@ public class SearchController {
 		this.groupService = groupService;
 	}
 
-	@GetMapping("/search")
+	/*@GetMapping("/search")
 	public ModelAndView search(@RequestParam String name, @RequestParam(defaultValue = "1") Integer page) throws SQLException {
 		ModelAndView modelAndView = new ModelAndView("result");
 		int recordsPerPage = 5;
@@ -64,5 +64,5 @@ public class SearchController {
 			}
 			modelAndView.addObject("name", name);
 		return  modelAndView;
-	}
+	}*/
 }

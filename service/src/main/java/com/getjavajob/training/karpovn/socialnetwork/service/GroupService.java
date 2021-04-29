@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
@@ -61,13 +62,13 @@ public class GroupService extends AbstractService<Group>{
         throw new UnsupportedOperationException();
     }*/
 
-    public List<Group> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr) {
+  /*  public List<Group> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr) {
         return groupDao.showGroupWithOffset(resultOnPage, countCurrentPage * 5 - 5, searchStr);
-    }
+    }*/
 
     @Transactional
     @Override
-    public void loadPicture(int id, InputStream inputStream) throws SQLException {
+    public void loadPicture(int id, InputStream inputStream) throws SQLException, IOException {
         groupDao.loadPicture(id, inputStream);
     }
 

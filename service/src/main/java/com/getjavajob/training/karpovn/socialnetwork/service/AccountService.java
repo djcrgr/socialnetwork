@@ -29,7 +29,7 @@ public class AccountService extends AbstractService<Account> {
 	@Override
 	public void create(Account account) {
 		accountDao.createAccount(account);
-		phoneDao.createAccPhones(account);
+		phoneDao.createAccPhones(account.getPhoneNum());
 	}
 
 	@Transactional
@@ -77,7 +77,7 @@ public class AccountService extends AbstractService<Account> {
 
 	@Transactional
 	@Override
-	public void loadPicture(int id, InputStream inputStream) throws SQLException {
+	public void loadPicture(int id, InputStream inputStream) throws SQLException, IOException {
 		accountDao.loadPicture(id, inputStream);
 	}
 
@@ -94,7 +94,7 @@ public class AccountService extends AbstractService<Account> {
 
 	@Transactional
 	@Override
-	public Account checkExisting(String email, String password) throws SQLException {
+	public Account checkExisting(String email, String password) {
 		Account account = accountDao.checkForLogin(email, password);
 		account.setPhoneNum(phoneDao.readAccPhones(account.getId()));
 		return account;
