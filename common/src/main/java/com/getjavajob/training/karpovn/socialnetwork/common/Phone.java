@@ -1,5 +1,6 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,9 @@ public class Phone implements Serializable {
     private String type;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private Account account;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

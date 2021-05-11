@@ -88,6 +88,6 @@ public class AccountDao {
 	}
 
 	public List<Account> showAllAccounts() throws SQLException {
-		return entityManager.createQuery("SELECT a FROM Account a", Account.class).getResultList();
+		return entityManager.createQuery("SELECT a FROM Account a join fetch a.phoneNum", Account.class).getResultList();
 	}
 }

@@ -3,6 +3,7 @@ package com.getjavajob.training.karpovn.socialnetwork.dao;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,8 +24,9 @@ public class PhoneDao {
 		}
 	}
 
+	@Transactional
 	public List<Phone> readAccPhones(Integer id) {
-		String qlString = "SELECT a FROM Phone a WHERE a.account.id = ?1";
+		String qlString = "SELECT a FROM Phone a where a.account.id = ?1";
 		TypedQuery<Phone> query = entityManager.createQuery(qlString, Phone.class);
 		query.setParameter(1, id);
 		return query.getResultList();

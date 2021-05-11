@@ -1,5 +1,6 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,7 +40,7 @@ public class Account implements Serializable {
     @OneToMany(cascade={CascadeType.ALL},fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     @ToString.Exclude
-    private List<Phone> phoneNum;
+    private List<Phone> phoneNum = new ArrayList<>();
 
     @JsonProperty("password")
     private String password;
@@ -46,6 +48,7 @@ public class Account implements Serializable {
     @JsonProperty("email")
     private String email;
 
+    @JsonIgnore
     private byte[] photo;
 
     public Account(int id, String name, String surname, int age) {
