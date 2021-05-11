@@ -35,8 +35,7 @@ public class Account implements Serializable {
     @JsonProperty("address")
     private String address;
 
-    @JsonProperty("phoneNum")
-    @OneToMany(cascade={CascadeType.ALL},fetch = FetchType.EAGER)
+    @OneToMany(cascade={CascadeType.ALL},fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     @ToString.Exclude
     private List<Phone> phoneNum;

@@ -21,6 +21,8 @@ public class Phone implements Serializable {
     @JsonProperty("type")
     @Column(name = "phoneType")
     private String type;
+
+
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;

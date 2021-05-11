@@ -88,8 +88,6 @@ public class AccountDao {
 	}
 
 	public List<Account> showAllAccounts() throws SQLException {
-		String qlString = "SELECT a FROM Account a";
-		TypedQuery<Account> query = entityManager.createQuery(qlString, Account.class);
-		return query.getResultList();
+		return entityManager.createQuery("SELECT a FROM Account a", Account.class).getResultList();
 	}
 }

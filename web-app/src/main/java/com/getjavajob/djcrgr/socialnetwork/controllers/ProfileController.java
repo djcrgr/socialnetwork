@@ -25,6 +25,7 @@ import java.security.*;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 @Controller
 public class ProfileController {
@@ -88,6 +89,12 @@ public class ProfileController {
 		} else {
 			return new ModelAndView("login");
 		}
+	}
+
+	@GetMapping("/showAll")
+	@ResponseBody
+	public List<Account> showAll() throws SQLException {
+		return accountService.showAll();
 	}
 
 	@PostMapping("/updateAcc")
