@@ -3,6 +3,7 @@ package com.getjavajob.training.karpovn.socialnetwork.dao;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Group;
 import com.getjavajob.training.karpovn.socialnetwork.common.GroupUser;
+import com.getjavajob.training.karpovn.socialnetwork.dao.util.PageableUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import javax.persistence.*;
 import javax.print.attribute.standard.DateTimeAtCreation;
 import javax.sql.DataSource;
+import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 @Repository
 public class GroupDao {
@@ -47,7 +50,12 @@ public class GroupDao {
     public String getImageFromDb(int groupId) {
         Query query = entityManager.createQuery("Select gr.picture FROM Group gr where gr.id = ?1 ");
         query.setParameter(1, groupId);
-        return query.getSingleResult().toString();
+        Object result = query.getSingleResult();
+        if (result == null) {
+            return null;
+        } else {
+            return DatatypeConverter.printBase64Binary((byte[]) result);
+        }
     }
 
     public List<Account> showAllUsers() {
@@ -84,5 +92,13 @@ public class GroupDao {
             group.setPicture(IOUtils.toByteArray(inputStream));
             entityManager.merge(group);
         }
+    }
+
+    public List<Group> showGroupWithOffset(int pageSize, int numberOfPage, String subStringName) throws SQLException {
+        List<Group> groups =
+                this.showAllGroups().stream().filter(group -> group.getName().contains(subStringName)).collect(Collectors.toList());
+        ;
+
+        return PageableUtil.getPage(groups, numberOfPage, pageSize);
     }
 }

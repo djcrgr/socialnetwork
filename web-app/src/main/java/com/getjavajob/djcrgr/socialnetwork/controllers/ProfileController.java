@@ -1,31 +1,36 @@
 package com.getjavajob.djcrgr.socialnetwork.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
-import org.aspectj.weaver.patterns.IToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 
 @Controller
 public class ProfileController {
@@ -91,11 +96,45 @@ public class ProfileController {
 		}
 	}
 
-	@GetMapping("/showAll")
-	@ResponseBody
-	public List<Account> showAll() throws SQLException {
-		return accountService.showAll();
+	@PostMapping("/uploadXml")
+	public ModelAndView uploadXml(@RequestParam("file") MultipartFile filePart) throws IOException, SQLException {
+		String content = new String(filePart.getBytes(), StandardCharsets.UTF_8);
+		JacksonXmlModule module = new JacksonXmlModule();
+		module.setDefaultUseWrapper(false);
+		XmlMapper xmlMapper = new XmlMapper(module);
+		Account account = xmlMapper.readValue(content, Account.class);
+		accountService.update(account);
+		ModelAndView modelAndView = new ModelAndView("home");
+		modelAndView.addObject("account", account);
+		return modelAndView;
 	}
+
+	@RequestMapping(value = "/downloadXml")
+	public void downloadXML(HttpServletRequest request,
+	                        HttpServletResponse response, @RequestParam Integer id) throws IOException, JAXBException {
+		Account account = accountService.readById(id);
+
+		try {
+			response.setContentType("application/xml");
+			response.setHeader("Content-Disposition",
+					"attachment; filename=somefile.xml");
+			JAXBContext jaxbContext = JAXBContext.newInstance(Account.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			// output pretty printed
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			// writing to a file
+        /*ObjectOutputStream out = new ObjectOutputStream(
+                response.getOutputStream());*/
+			jaxbMarshaller.marshal(account, response.getOutputStream());
+			// writing to console
+			// jaxbMarshaller.marshal(book, System.out);
+			response.flushBuffer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 
 	@PostMapping("/updateAcc")
 	public ModelAndView updateAcc(@RequestBody String json) throws SQLException,

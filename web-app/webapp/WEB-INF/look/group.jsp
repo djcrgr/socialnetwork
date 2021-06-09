@@ -58,7 +58,7 @@
                 <p ><strong >groupId: </strong >${requestScope.group.id}</p >
                 <p ><strong >Name: </strong >${requestScope.group.name}</p >
                 <p ><strong >Description: </strong >${requestScope.group.description}</p >
-                <p ><strong >Owner: </strong ><a href="profile?id=${requestScope.group.owner.id}">${requestScope.group.owner.name} ${requestScope.group.owner.surname}</a></p >
+                <p ><strong >Owner: </strong ><a href="profile?id=${requestScope.group.account.id}">${requestScope.group.account.name} ${requestScope.group.account.surname}</a></p >
             </div>
         </div >
     </div >

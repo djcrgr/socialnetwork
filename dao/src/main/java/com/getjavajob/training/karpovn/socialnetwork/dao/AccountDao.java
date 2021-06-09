@@ -1,6 +1,7 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import com.getjavajob.training.karpovn.socialnetwork.dao.util.PageableUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,7 +14,9 @@ import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class AccountDao {
@@ -25,7 +28,7 @@ public class AccountDao {
 		Query query = entityManager.createQuery("Select acc.photo FROM Account acc where acc.id = ?1 ");
 		query.setParameter(1, accountId);
 		Object result = query.getSingleResult();
-		if ( result == null) {
+		if (result == null) {
 			return null;
 		} else {
 			return DatatypeConverter.printBase64Binary((byte[]) result);
@@ -64,19 +67,12 @@ public class AccountDao {
 		}
 	}
 
-	public List<Account> showAccWithOffset(int limit, int offset, String subStringName, String subStringSurname) {
-		List<Account> accountList = new ArrayList<>();
-		/*String qlStringOne = "select * from account where name like CONCAT( '%' ,?1, '%') limit ?2 offset ?3";
-		TypedQuery<Account> query = em.createQuery(qlStringOne, Account.class);
-		query.setParameter()
-		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(QUERY_FOR__OFFSET, new Object[]{subStringName,
-				subStringSurname,
-				limit,
-				offset}, new int[]{Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.INTEGER});
-		while (rowSet.next()) {
-			accountList.add(createAccountFromResultRowSet(rowSet));
-		}*/
-		return accountList;
+	public List<Account> showAccWithOffset(int pageSize, int numberOfPage, String subStringName) throws SQLException {
+		List<Account> accountList = this.showAllAccounts().stream().filter(account -> account.getName().contains(subStringName) ||
+				account.getSurname().contains(subStringName)).collect(Collectors.toList());
+		;
+
+		return PageableUtil.getPage(accountList, numberOfPage, pageSize);
 	}
 
 	public void loadPicture(int accountId, InputStream inputStream) throws SQLException, IOException {

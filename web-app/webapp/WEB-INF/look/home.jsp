@@ -11,6 +11,7 @@
             crossorigin="anonymous" ></script >
     <script type="text/javascript" src="/web/js/validationTel.js"></script>
     <script type="text/javascript" src="/web/js/myScript.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head >
 <body >
 <div class="container" >
@@ -57,10 +58,10 @@
             </div >
         </div>
         <div class="col-10" >
-            <div class="shadow-lg p-3 mb-5 bg-body rounded">
+            <div id="accInfo" class="shadow-lg p-3 mb-5 bg-body rounded">
                 <h1 >Hello ${requestScope.account.name}</h1 >
                 <br/>
-                <h5><p ><strong >accountID: </strong >${requestScope.account.id}</p ></h5>
+                <h5><p id="id"><strong >accountID: </strong >${requestScope.account.id}</p ></h5>
                 <h5><p ><strong >Name: </strong >${requestScope.account.name}</p ></h5>
                 <h5><p ><strong >Surname: </strong >${requestScope.account.surname}</p ></h5>
                 <h5><p ><strong >Age: </strong >${requestScope.account.age}</p ></h5>
@@ -76,6 +77,18 @@
                 </c:forEach>
                 <br/>
                 <h5><p><strong >e-mail: </strong >${requestScope.account.email}</p></h5>
+                <br/>
+                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill"
+                                                      href="downloadXml?id=${requestScope.account.id}" role="tab" aria-controls="v-pills-profile"
+                                                      aria-selected="false" >Download Xml</a >
+                <div class="shadow-lg p-3 mb-5 bg-body rounded" >
+                    <form action="uploadXml" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="newAccId" value="${requestScope.currentAcc.id}" readonly>
+                        <input type="file" name="file" />
+                        <button class="btn btn-primary" type="submit" >Upload Xml</button >
+                    </form>
+                </div>
+
             </div>
         </div >
     </div >

@@ -88,4 +88,9 @@ public class GroupService extends AbstractService<Group>{
     Group checkExisting(String email, String password) {
         throw new UnsupportedOperationException();
     }
+
+    @Transactional
+    public List<Group> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr) throws SQLException {
+        return groupDao.showGroupWithOffset(resultOnPage, countCurrentPage, searchStr);
+    }
 }

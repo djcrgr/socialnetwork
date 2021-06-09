@@ -24,10 +24,33 @@ public class SearchController {
 		this.groupService = groupService;
 	}
 
-	/*@GetMapping("/search")
+	@GetMapping("/search")
 	public ModelAndView search(@RequestParam String name, @RequestParam(defaultValue = "1") Integer page) throws SQLException {
 		ModelAndView modelAndView = new ModelAndView("result");
-		int recordsPerPage = 5;
+		List<Account> accountList = accountService.showWithOffset(5, page, name);
+		if (!accountList.isEmpty()) {
+			modelAndView.addObject("resultList", accountList);
+			int numberOfPages = accountList.size() / 10;
+			if (numberOfPages % 10 > 0) {
+				numberOfPages++;
+			}
+			modelAndView.addObject("numberOfPages", numberOfPages);
+			modelAndView.addObject("currentPage", page);
+			modelAndView.addObject("recordsPerPage", 10);
+		}
+		List<Group> groupList = groupService.showWithOffset(5, page, name);
+		if (!groupList.isEmpty()) {
+			int numberOfPagesGr = groupList.size() / 10;
+			if (numberOfPagesGr % 10 > 0) {
+				numberOfPagesGr++;
+			}
+			modelAndView.addObject("resultListGroups", groupList);
+			modelAndView.addObject("numberOfPagesGr", numberOfPagesGr);
+			modelAndView.addObject("currentPageGr", page);
+			modelAndView.addObject("recordsPerPage", 10);
+		}
+		modelAndView.addObject("name", name);
+		/*int recordsPerPage = 5;
 			List<Group> groups = new ArrayList<>();
 			List<Account> resultList = new ArrayList<>();
 			List<Account> accountList = accountService.showWithOffset(5, page, name, name);
@@ -62,7 +85,7 @@ public class SearchController {
 				modelAndView.addObject("currentPage", page);
 				modelAndView.addObject("recordsPerPage", recordsPerPage);
 			}
-			modelAndView.addObject("name", name);
+			modelAndView.addObject("name", name);*/
 		return  modelAndView;
-	}*/
+	}
 }

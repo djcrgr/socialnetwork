@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService extends AbstractService<Account> {
@@ -69,9 +70,9 @@ public class AccountService extends AbstractService<Account> {
         accountDao.removeFriend(account, friend);
     }*/
 
-	public List<Account> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr, String searchStrCopy) throws SQLException {
-		return accountDao.showAccWithOffset(resultOnPage, countCurrentPage * 5 - 5, searchStr,
-				searchStrCopy);
+	@Transactional
+	public List<Account> showWithOffset(int resultOnPage, int countCurrentPage, String searchStr) throws SQLException {
+		return accountDao.showAccWithOffset(resultOnPage, countCurrentPage, searchStr);
 	}
 
 	@Transactional
