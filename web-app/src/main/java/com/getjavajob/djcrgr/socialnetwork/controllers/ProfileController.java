@@ -1,14 +1,13 @@
 package com.getjavajob.djcrgr.socialnetwork.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import com.getjavajob.training.karpovn.socialnetwork.common.Message;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
+import com.getjavajob.training.karpovn.socialnetwork.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,21 +24,26 @@ import javax.servlet.http.HttpSession;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProfileController {
 
 	private final AccountService accountService;
+	private final MessageService messageService;
 
 	@Autowired
-	public ProfileController(AccountService accountService) {
+	public ProfileController(AccountService accountService, MessageService messageService) {
 		this.accountService = accountService;
+		this.messageService = messageService;
 	}
 
 	@GetMapping("/")
@@ -55,6 +59,10 @@ public class ProfileController {
 		ModelAndView modelAndView = new ModelAndView("home");
 		modelAndView.addObject("account", accountService.readById(id));
 		modelAndView.addObject("image", accountService.getImageFromDb(id));
+		List<Message> messages =
+				messageService.showMessagesByAccId(id).stream().filter(message -> message.getTo().equals("wall"))
+						.collect(Collectors.toList());
+		modelAndView.addObject("messages", messages);
 		return modelAndView;
 	}
 
@@ -120,14 +128,8 @@ public class ProfileController {
 					"attachment; filename=somefile.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(Account.class);
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			// output pretty printed
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			// writing to a file
-        /*ObjectOutputStream out = new ObjectOutputStream(
-                response.getOutputStream());*/
 			jaxbMarshaller.marshal(account, response.getOutputStream());
-			// writing to console
-			// jaxbMarshaller.marshal(book, System.out);
 			response.flushBuffer();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -147,7 +149,7 @@ public class ProfileController {
 
 	@PostMapping("/picUpload")
 	public ModelAndView pucUpload(@RequestParam("file") MultipartFile filePart,
-	                              @RequestParam("newAccId") Integer id  ) throws IOException,
+	                              @RequestParam("newAccId") Integer id) throws IOException,
 			SQLException {
 		if (id == null) {
 			id = 0;
@@ -188,16 +190,13 @@ public class ProfileController {
 
 
 	private String encrypt(String secret, String data) {
-
-
 		byte[] decodedKey = Base64.getDecoder().decode(secret);
-
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
 			// rebuild key using SecretKeySpec
 			SecretKey originalKey = new SecretKeySpec(Arrays.copyOf(decodedKey, 16), "AES");
 			cipher.init(Cipher.ENCRYPT_MODE, originalKey);
-			byte[] cipherText = cipher.doFinal(data.getBytes("UTF-8"));
+			byte[] cipherText = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
 			return Base64.getEncoder().encodeToString(cipherText);
 		} catch (Exception e) {
 			throw new RuntimeException(

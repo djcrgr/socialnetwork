@@ -6,15 +6,11 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-
 import javax.persistence.*;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 

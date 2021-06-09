@@ -24,6 +24,9 @@
     <bean id="phoneDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao">
     </bean>
 
+    <bean id="messageDao" class="com.getjavajob.training.karpovn.socialnetwork.dao.MessageDao">
+    </bean>
+
     <bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory"  ref="entityManagerFactory"/>
     </bean>

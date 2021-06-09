@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AccountService extends AbstractService<Account> {
+public class AccountService {
 
 	private final AccountDao accountDao;
 	private final PhoneDao phoneDao;
@@ -26,14 +26,12 @@ public class AccountService extends AbstractService<Account> {
 	}
 
 	@Transactional
-	@Override
 	public void create(Account account) {
 		accountDao.createAccount(account);
 		phoneDao.createAccPhones(account.getPhoneNum());
 	}
 
 	@Transactional
-	@Override
 	public Account readById(int id) {
 		Account account = accountDao.readAccountById(id);
 		account.setPhoneNum(phoneDao.readAccPhones(id));
@@ -41,20 +39,17 @@ public class AccountService extends AbstractService<Account> {
 	}
 
 	@Transactional
-	@Override
 	public String getImageFromDb(int id) throws IOException, SQLException {
 		return accountDao.getImageFromDb(id);
 	}
 
 	@Transactional
-	@Override
 	public void update(Account account) throws SQLException {
 		accountDao.updateAccount(account);
 		phoneDao.updateAccPhones(account);
 	}
 
 	@Transactional
-	@Override
 	public void delete(Account account) throws SQLException {
 		accountDao.deleteById(account.getId());
 		phoneDao.deleteAccPhones(account);
@@ -76,7 +71,6 @@ public class AccountService extends AbstractService<Account> {
 	}
 
 	@Transactional
-	@Override
 	public void loadPicture(int id, InputStream inputStream) throws SQLException, IOException {
 		accountDao.loadPicture(id, inputStream);
 	}
@@ -87,13 +81,11 @@ public class AccountService extends AbstractService<Account> {
     }*/
 
 	@Transactional
-	@Override
 	public List<Account> showAll() throws SQLException {
 		return accountDao.showAllAccounts();
 	}
 
 	@Transactional
-	@Override
 	public Account checkExisting(String email, String password) {
 		Account account = accountDao.checkForLogin(email, password);
 		account.setPhoneNum(phoneDao.readAccPhones(account.getId()));

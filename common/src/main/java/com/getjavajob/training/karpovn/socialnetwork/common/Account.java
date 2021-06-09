@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Repository
 @Entity
 @Table(name = "account")
 @XmlRootElement
@@ -55,6 +54,10 @@ public class Account implements Serializable {
 
     @JsonIgnore
     private byte[] photo;
+
+    @JsonIgnore
+    @XmlTransient
+    private boolean admin;
 
     public Account(int id, String name, String surname, int age) {
         this.id = id;

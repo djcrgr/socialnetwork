@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
-<%@ page contentType="text/html;charset=utf-8" %>
+
 <head >
     <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <title >social-network</title >
@@ -68,19 +68,19 @@
                 <h5><p ><strong >Address: </strong >${requestScope.account.address}</p ></h5>
                 <h5><p ><strong >phones</strong></p ></h5>
                 <h5></h5><c:forEach var="phone" items="${requestScope.account.phoneNum}">
-                    <table >
-                        <tr >
-                            <td >${phone.number}</td >
-                            <td >${phone.type}</td >
-                        </tr >
-                    </table >
-                </c:forEach>
+                <table >
+                    <tr >
+                        <td >${phone.number}</td >
+                        <td >${phone.type}</td >
+                    </tr >
+                </table >
+            </c:forEach>
                 <br/>
                 <h5><p><strong >e-mail: </strong >${requestScope.account.email}</p></h5>
                 <br/>
                 <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill"
-                                                      href="downloadXml?id=${requestScope.account.id}" role="tab" aria-controls="v-pills-profile"
-                                                      aria-selected="false" >Download Xml</a >
+                   href="downloadXml?id=${requestScope.account.id}" role="tab" aria-controls="v-pills-profile"
+                   aria-selected="false" >Download Xml</a >
                 <div class="shadow-lg p-3 mb-5 bg-body rounded" >
                     <form action="uploadXml" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="newAccId" value="${requestScope.currentAcc.id}" readonly>
@@ -88,25 +88,19 @@
                         <button class="btn btn-primary" type="submit" >Upload Xml</button >
                     </form>
                 </div>
-                <div id="messages" class="shadow-lg p-3 mb-5 bg-body rounded">
-                    <c:forEach var="message" items="${messages}">
-                            <table >
-                                <tr >
-                                    <td >From  <b>${message.accountFrom.name} ${message.accountFrom.surname}</b></td >
-                                </tr >
-                                <tr>
-                                    <td>
-                                        <h3>${message.body}</h3>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <span class="border border-5" ><a class="nav-link" id="v-pills-profile-tab" data-toggle="pill"
-                                                                      href="/deleteMessage?idMessage=${message.id}&idAccount=${message.accountTo.id}" role="tab" aria-controls="v-pills-profile"
-                                                                      aria-selected="false" >Delete message</a ></span>
-                                </tr>
-                            </table >
-                    </c:forEach>
-                </div>
+
+            </div>
+            <div id="messages" class="shadow-lg p-3 mb-5 bg-body rounded">
+                <c:forEach var="message" items="${messages}">
+                    <c:if test="${message.to == 'wall'}">
+                        <table >
+                            <tr >
+                                <td >${message.accountFrom.name}</td >
+                                <td >${message.body}</td >
+                            </tr >
+                        </table >
+                    </c:if>
+                </c:forEach>
             </div>
         </div >
     </div >

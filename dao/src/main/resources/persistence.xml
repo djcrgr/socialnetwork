@@ -3,5 +3,6 @@
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Account</class>
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Phone</class>
         <class>com.getjavajob.training.karpovn.socialnetwork.common.Group</class>
+        <class>com.getjavajob.training.karpovn.socialnetwork.common.Message</class>
     </persistence-unit>
 </persistence>
