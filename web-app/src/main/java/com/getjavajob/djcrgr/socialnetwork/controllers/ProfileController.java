@@ -26,6 +26,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
@@ -60,14 +61,14 @@ public class ProfileController {
 		modelAndView.addObject("account", accountService.readById(id));
 		modelAndView.addObject("image", accountService.getImageFromDb(id));
 		List<Message> messages =
-				messageService.showMessagesByAccId(id).stream().filter(message -> message.getTo().equals("wall"))
+				messageService.showMessagesByAccId(id).stream().filter(message -> "wall".equals(message.getRecepient()))
 						.collect(Collectors.toList());
 		modelAndView.addObject("messages", messages);
 		return modelAndView;
 	}
 
 	@GetMapping("/logout")
-	public ModelAndView logout(HttpServletResponse response, HttpServletRequest request) {
+	public ModelAndView logout(HttpServletResponse response, HttpServletRequest request) throws UnsupportedEncodingException {
 		HttpSession session = request.getSession();
 		Cookie cookieMail = new Cookie("mail", "");
 		Cookie cookiePass = new Cookie("pas", "");
@@ -82,7 +83,7 @@ public class ProfileController {
 	@PostMapping("/login")
 	public ModelAndView login(@RequestParam String email, @RequestParam String password, HttpServletRequest request,
 	                          HttpServletResponse response) throws SQLException,
-			IOException, GeneralSecurityException {
+			IOException {
 		Account account = accountService.checkExisting(email, password);
 		if (account != null) {
 			ModelAndView modelAndView = new ModelAndView("home");
@@ -118,14 +119,12 @@ public class ProfileController {
 	}
 
 	@RequestMapping(value = "/downloadXml")
-	public void downloadXML(HttpServletRequest request,
-	                        HttpServletResponse response, @RequestParam Integer id) throws IOException, JAXBException {
+	public void downloadXML(HttpServletResponse response, @RequestParam Integer id) {
 		Account account = accountService.readById(id);
-
 		try {
 			response.setContentType("application/xml");
 			response.setHeader("Content-Disposition",
-					"attachment; filename=somefile.xml");
+					"attachment; filename=someFile.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(Account.class);
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

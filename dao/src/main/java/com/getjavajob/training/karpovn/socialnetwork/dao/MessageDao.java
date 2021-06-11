@@ -1,17 +1,12 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
-import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Message;
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 

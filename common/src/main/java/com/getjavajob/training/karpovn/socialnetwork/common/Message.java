@@ -1,19 +1,26 @@
 package com.getjavajob.training.karpovn.socialnetwork.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "message")
 public class Message implements Serializable {
 
 	@Id
+	@GenericGenerator(name="kaugen" , strategy="increment")
+	@GeneratedValue(generator="kaugen")
 	private Integer id;
-	private String to;
+	private String recepient;
 	private Date date;
 	private String body;
 	private String imageUrl;
