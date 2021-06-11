@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
-
+<%@ page contentType="text/html;charset=utf-8" %>
 <head >
     <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <title >social-network</title >
@@ -58,7 +58,7 @@
                 <p ><strong >groupId: </strong >${requestScope.group.id}</p >
                 <p ><strong >Name: </strong >${requestScope.group.name}</p >
                 <p ><strong >Description: </strong >${requestScope.group.description}</p >
-                <p ><strong >Owner: </strong ><a href="profile?id=${requestScope.group.owner.id}">${requestScope.group.owner.name} ${requestScope.group.owner.surname}</a></p >
+                <p ><strong >Owner: </strong ><a href="profile?id=${requestScope.group.account.id}">${requestScope.group.account.name} ${requestScope.group.account.surname}</a></p >
             </div>
         </div >
     </div >

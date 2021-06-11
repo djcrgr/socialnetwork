@@ -32,3 +32,4 @@ function sendToServer() {
 function uploadPicture() {
 
 }
+
