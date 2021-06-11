@@ -1,0 +1,15 @@
+com\getjavajob\djcrgr\socialnetwork\controllers\SearchController.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\PicUploadServlet.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\LogoutServlet.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\UpdateAccServlet.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\ProfileServlet.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\SearchServlet.class
+com\getjavajob\djcrgr\socialnetwork\controllers\GroupController.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\LoginServlet.class
+com\getjavajob\djcrgr\socialnetwork\controllers\ProfileController.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\ReadAccServlet.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\RegisterServlet.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\ShowAllGroupsServlet.class
+com\getjavajob\djcrgr\socialnetwork\oldServlets\GroupProfileServlet.class
+com\getjavajob\djcrgr\socialnetwork\filters\CookieFilter.class
+com\getjavajob\djcrgr\socialnetwork\interceptors\CookieInterceptor.class
