@@ -6,6 +6,7 @@ import com.getjavajob.training.karpovn.socialnetwork.common.GroupUser;
 import com.getjavajob.training.karpovn.socialnetwork.dao.util.PageableUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;

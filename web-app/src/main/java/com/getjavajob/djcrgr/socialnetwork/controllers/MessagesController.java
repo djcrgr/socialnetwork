@@ -1,3 +1,4 @@
+/*
 package com.getjavajob.djcrgr.socialnetwork.controllers;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
@@ -48,8 +49,10 @@ public class MessagesController {
 		if (message.getAccountTo().getId().equals(idAccount)) {
 			messageService.delete(message);
 		}
-		/*modelAndView.addObject("account", account);
-		modelAndView.addObject("image", accountService.getImageFromDb(idAccount));*/
+		*/
+/*modelAndView.addObject("account", account);
+		modelAndView.addObject("image", accountService.getImageFromDb(idAccount));*//*
+
 		return "forward:/profile?id=" + idAccount;
 	}
 
@@ -72,3 +75,4 @@ public class MessagesController {
 		return modelAndView;
 	}
 }
+*/

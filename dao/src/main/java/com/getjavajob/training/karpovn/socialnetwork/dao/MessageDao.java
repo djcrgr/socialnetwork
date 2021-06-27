@@ -1,6 +1,7 @@
 package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,9 @@ public class MessageDao {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	public MessageDao() {
+	}
 
 	public void createMessage(Message message) {
 		entityManager.persist(message);

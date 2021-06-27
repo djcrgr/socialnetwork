@@ -1,6 +1,7 @@
 package com.getjavajob.training.karpovn.socialnetwork.service;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
+import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
 import com.getjavajob.training.karpovn.socialnetwork.dao.AccountDao;
 import com.getjavajob.training.karpovn.socialnetwork.dao.PhoneDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ public class AccountService {
 	private final AccountDao accountDao;
 	private final PhoneDao phoneDao;
 
-	@Autowired
 	public AccountService(AccountDao accountDao, PhoneDao phoneDao) {
 		this.accountDao = accountDao;
 		this.phoneDao = phoneDao;
@@ -34,7 +34,9 @@ public class AccountService {
 	@Transactional
 	public Account readById(int id) {
 		Account account = accountDao.readAccountById(id);
-		account.setPhoneNum(phoneDao.readAccPhones(id));
+		if (account != null) {
+			account.setPhoneNum(phoneDao.readAccPhones(id));
+		}
 		return account;
 	}
 
@@ -45,8 +47,11 @@ public class AccountService {
 
 	@Transactional
 	public void update(Account account) throws SQLException {
+		/*phoneDao.updateAccPhones(account);*/
+		for (Phone phone : account.getPhoneNum()) {
+			phone.setAccount(account);
+		}
 		accountDao.updateAccount(account);
-		phoneDao.updateAccPhones(account);
 	}
 
 	@Transactional
@@ -88,7 +93,9 @@ public class AccountService {
 	@Transactional
 	public Account checkExisting(String email, String password) {
 		Account account = accountDao.checkForLogin(email, password);
-		account.setPhoneNum(phoneDao.readAccPhones(account.getId()));
+		if (account != null) {
+			account.setPhoneNum(phoneDao.readAccPhones(account.getId()));
+		}
 		return account;
 	}
 }

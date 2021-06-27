@@ -3,6 +3,7 @@ package com.getjavajob.training.karpovn.socialnetwork.dao;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.dao.util.PageableUtil;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -20,6 +21,9 @@ public class AccountDao {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	public AccountDao() {
+	}
+
 	public String getImageFromDb(int accountId) {
 		Query query = entityManager.createQuery("Select acc.photo FROM Account acc where acc.id = ?1 ");
 		query.setParameter(1, accountId);
@@ -32,12 +36,17 @@ public class AccountDao {
 	}
 
 	public Account checkForLogin(String email, String password) {
-		String qlString = "Select acc FROM Account acc where acc.email = ?1 and acc" +
-				".password = ?2";
-		TypedQuery<Account> query = entityManager.createQuery(qlString, Account.class);
-		query.setParameter(1, email);
-		query.setParameter(2, password);
-		return query.getSingleResult();
+		try {
+			String qlString = "Select acc FROM Account acc where acc.email = ?1 and acc" +
+					".password = ?2";
+			TypedQuery<Account> query = entityManager.createQuery(qlString, Account.class);
+			query.setParameter(1, email);
+			query.setParameter(2, password);
+			return query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+
 	}
 
 	public void createAccount(Account account) {

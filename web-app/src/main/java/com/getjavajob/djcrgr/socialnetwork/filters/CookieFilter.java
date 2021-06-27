@@ -1,4 +1,4 @@
-package com.getjavajob.djcrgr.socialnetwork.filters;
+/*package com.getjavajob.djcrgr.socialnetwork.filters;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
@@ -79,21 +79,5 @@ public class CookieFilter implements Filter {
         filterChain.doFilter(request, servletResponse);
     }
 
-    private String decrypt(String secret, String encryptedString) {
 
-
-        byte[] decodedKey = Base64.getDecoder().decode(secret);
-
-        try {
-            Cipher cipher = Cipher.getInstance("AES");
-            // rebuild key using SecretKeySpec
-            SecretKey originalKey = new SecretKeySpec(Arrays.copyOf(decodedKey, 16), "AES");
-            cipher.init(Cipher.DECRYPT_MODE, originalKey);
-            byte[] cipherText = cipher.doFinal(Base64.getDecoder().decode(encryptedString));
-            return new String(cipherText);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Error occured while decrypting data", e);
-        }
-    }
-}
+}*/

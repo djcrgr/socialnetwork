@@ -3,6 +3,7 @@ package com.getjavajob.training.karpovn.socialnetwork.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "groupusers")
 @Data
+@Component
 @NoArgsConstructor
 @AllArgsConstructor
 public class GroupUser {

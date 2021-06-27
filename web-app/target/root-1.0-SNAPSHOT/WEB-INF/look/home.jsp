@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
-
 <%@ page contentType="text/html;charset=utf-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head >
     <title >social-network</title >
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -40,11 +40,11 @@
                 <div class="btn-group-vertical" >
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
                     <span class="border border-5" ><a class="nav-link active" id="v-pills-home-tab" data-toggle="pill"
-                                                      href="profile?id=${requestScope.account.id}" role="tab"
+                                                      href="${pageContext.request.contextPath}/home?account_id=${sessionScope.account_id}" role="tab"
                                                       aria-controls="v-pills-home"
                                                       aria-selected="true" >Home</a ></span >
                         <span class="border border-5" ><a class="nav-link" id="v-pills-profile-tab" data-toggle="pill"
-                                                          href="profileEdit?id=${requestScope.account.id}" role="tab"
+                                                          href="${pageContext.request.contextPath}/profileEdit?account_id=${sessionScope.account_id}" role="tab"
                                                           aria-controls="v-pills-profile"
                                                           aria-selected="false" >Profile Edit</a ></span >
                         <span class="border border-5" ><a class="nav-link" id="v-pills-messages-tab" data-toggle="pill"
@@ -54,7 +54,7 @@
                                                           href="#v-pills-settings" role="tab"
                                                           aria-controls="v-pills-settings" aria-selected="false" >Settings</a ></span >
                         <span class="border border-5" ><a class="nav-link" id="v-pills-logout-tab" data-toggle="pill"
-                                                          href="logout" role="tab"
+                                                          href="${pageContext.request.contextPath}/logout" role="tab"
                                                           aria-controls="v-pills-settings"
                                                           aria-selected="false" >Logout</a ></span >
                         <span class="border border-5" ><a class="nav-link" id="v-pills-showGroups-tab"
@@ -86,11 +86,11 @@
                 <h5 ><p ><strong >e-mail: </strong >${requestScope.account.email}</p ></h5 >
                 <br />
                 <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill"
-                   href="downloadXml?id=${requestScope.account.id}" role="tab" aria-controls="v-pills-profile"
+                   href="downloadXml?id=${sessionScope.account_id}" role="tab" aria-controls="v-pills-profile"
                    aria-selected="false" >Download Xml</a >
                 <div class="shadow-lg p-3 mb-5 bg-body rounded" >
                     <form action="uploadXml" method="post" enctype="multipart/form-data" >
-                        <input type="hidden" name="newAccId" value="${requestScope.currentAcc.id}" readonly >
+                        <input type="hidden" name="newAccId" value="${sessionScope.account_id}" readonly >
                         <input type="file" name="file" />
                         <button class="btn btn-primary" type="submit" >Upload Xml</button >
                     </form >

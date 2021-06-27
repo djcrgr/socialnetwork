@@ -4,105 +4,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
-import com.getjavajob.training.karpovn.socialnetwork.common.Message;
 import com.getjavajob.training.karpovn.socialnetwork.service.AccountService;
 import com.getjavajob.training.karpovn.socialnetwork.service.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class ProfileController {
 
 	private final AccountService accountService;
-	private final MessageService messageService;
 
-	@Autowired
 	public ProfileController(AccountService accountService, MessageService messageService) {
 		this.accountService = accountService;
-		this.messageService = messageService;
-	}
-
-	@GetMapping("/")
-	public ModelAndView hello(Model model) {
-		return new ModelAndView("index");
-	}
-
-	@GetMapping("/profile")
-	public ModelAndView profile(@RequestParam(required = false) Integer id) throws IOException, SQLException {
-		if (id == null) {
-			return new ModelAndView("login");
-		}
-		ModelAndView modelAndView = new ModelAndView("home");
-		modelAndView.addObject("account", accountService.readById(id));
-		modelAndView.addObject("image", accountService.getImageFromDb(id));
-		List<Message> messages =
-				messageService.showMessagesByAccId(id).stream().filter(message -> "wall".equals(message.getRecepient()))
-						.collect(Collectors.toList());
-		modelAndView.addObject("messages", messages);
-		return modelAndView;
-	}
-
-	@GetMapping("/logout")
-	public ModelAndView logout(HttpServletResponse response, HttpServletRequest request) throws UnsupportedEncodingException {
-		HttpSession session = request.getSession();
-		Cookie cookieMail = new Cookie("mail", "");
-		Cookie cookiePass = new Cookie("pas", "");
-		cookieMail.setMaxAge(0);
-		cookiePass.setMaxAge(0);
-		response.addCookie(cookieMail);
-		response.addCookie(cookiePass);
-		session.invalidate();
-		return new ModelAndView("redirect: login");
-	}
-
-	@PostMapping("/login")
-	public ModelAndView login(@RequestParam String email, @RequestParam String password, HttpServletRequest request,
-	                          HttpServletResponse response) throws SQLException,
-			IOException {
-		Account account = accountService.checkExisting(email, password);
-		if (account != null) {
-			ModelAndView modelAndView = new ModelAndView("home");
-			modelAndView.addObject("account", account);
-			modelAndView.addObject("image", accountService.getImageFromDb(account.getId()));
-			String rememberCheck = request.getParameter("remember");
-			String dataMailPass = "email=" + email + "&" + "password=" + password + "^";
-			String key = "ThisIsASecretKey";
-			String token = encrypt(key, dataMailPass);
-			Cookie cookie = new Cookie("token", token);
-			if (rememberCheck == null) {
-				cookie.setMaxAge(-1);
-			}
-			cookie.setMaxAge(60 * 60);
-			response.addCookie(cookie);
-			return modelAndView;
-		} else {
-			return new ModelAndView("login");
-		}
 	}
 
 	@PostMapping("/uploadXml")
@@ -113,8 +37,10 @@ public class ProfileController {
 		XmlMapper xmlMapper = new XmlMapper(module);
 		Account account = xmlMapper.readValue(content, Account.class);
 		accountService.update(account);
-		ModelAndView modelAndView = new ModelAndView("home");
-		modelAndView.addObject("account", account);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("account_id", account.getId());
+		modelAndView.setViewName("redirect:/home");
+		System.out.println(account.getPhoneNum().toString());
 		return modelAndView;
 	}
 
@@ -133,9 +59,7 @@ public class ProfileController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
-
 
 	@PostMapping("/updateAcc")
 	public ModelAndView updateAcc(@RequestBody String json) throws SQLException,
@@ -164,7 +88,7 @@ public class ProfileController {
 	@GetMapping("/profileEdit")
 	public ModelAndView profileEdit(@RequestParam(required = false) Integer id) throws IOException, SQLException {
 		if (id == null) {
-			return new ModelAndView("redirect: login");
+			return new ModelAndView("redirect:login");
 		}
 		Account account = accountService.readById(id);
 		ModelAndView modelAndView = new ModelAndView("profileEdit");
@@ -180,27 +104,5 @@ public class ProfileController {
 			modelAndView.addObject("workPhone", account.getPhoneNum().get(1).getNumber());
 		}
 		return modelAndView;
-	}
-
-	@GetMapping("/login")
-	public ModelAndView showLoginPage() {
-		return new ModelAndView("login");
-	}
-
-
-	private String encrypt(String secret, String data) {
-		byte[] decodedKey = Base64.getDecoder().decode(secret);
-		try {
-			Cipher cipher = Cipher.getInstance("AES");
-			// rebuild key using SecretKeySpec
-			SecretKey originalKey = new SecretKeySpec(Arrays.copyOf(decodedKey, 16), "AES");
-			cipher.init(Cipher.ENCRYPT_MODE, originalKey);
-			byte[] cipherText = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
-			return Base64.getEncoder().encodeToString(cipherText);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					"Error occured while encrypting data", e);
-		}
-
 	}
 }

@@ -16,7 +16,6 @@ public class GroupService {
 
     private final GroupDao groupDao;
 
-    @Autowired
     public GroupService(GroupDao groupDao){
         this.groupDao = groupDao;
     }

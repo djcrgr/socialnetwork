@@ -2,6 +2,7 @@ package com.getjavajob.training.karpovn.socialnetwork.dao;
 
 import com.getjavajob.training.karpovn.socialnetwork.common.Account;
 import com.getjavajob.training.karpovn.socialnetwork.common.Phone;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,9 @@ public class PhoneDao {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	public PhoneDao() {
+	}
 
 	public void createAccPhones(List<Phone> phoneList) {
 		if (!phoneList.isEmpty()) {
